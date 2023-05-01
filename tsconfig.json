@@ -34,11 +34,20 @@
       "components/*": [
         "./src/components/*"
       ],
+      "context/*": [
+        "./src/context/*"
+      ],
       "hooks/*": [
         "./src/hooks/*"
       ],
+      "models": [
+        "./src/models"
+      ],
       "pages/*": [
         "./src/pages/*"
+      ],
+      "routes/*": [
+        "./src/routes/*"
       ],
       "styles/*": [
         "./src/styles/*"

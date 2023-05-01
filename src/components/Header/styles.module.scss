@@ -1,0 +1,24 @@
+.header {
+  display: flex;
+  justify-content: space-between;
+
+  &__checkout {
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    justify-items: center;
+    width: 30px;
+    margin: 0 0 0 0.5em;
+  }
+
+  &__alert {
+    color: #33b13a;
+    font-size: 14px;
+    margin-left: 5px;
+  }
+
+  a {
+    text-decoration: none;
+    color: #33b1ff;
+  }
+}

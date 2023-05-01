@@ -12,4 +12,13 @@ module.exports = {
 		"react-refresh/only-export-components": "warn",
 		"@typescript-eslint/no-explicit-any": ["off"],
 	},
+	globals: {
+		window: true,
+		document: true,
+		localStorage: true,
+		FormData: true,
+		FileReader: true,
+		Blob: true,
+		navigator: true,
+	},
 };
