@@ -1,6 +1,6 @@
 import styles from "./styles.module.scss";
 
-const Header = () => {
+export const Header = () => {
 	return (
 		<div className={styles.header}>
 			<h1 className={styles.header__title}>PlatziConf Merch</h1>
@@ -8,5 +8,3 @@ const Header = () => {
 		</div>
 	);
 };
-
-export { Header };

@@ -1,7 +1,17 @@
-import React from "react";
+import { initialState } from "../../initialState";
+import { Products } from "@components";
+import { useStore } from "@context";
 
 const Home = () => {
-	return <div>Home</div>;
+	const { products } = initialState;
+	const { state } = useStore();
+	console.log(state);
+
+	return (
+		<div>
+			<Products products={products} />
+		</div>
+	);
 };
 
 export { Home };

@@ -1,4 +1,4 @@
-const Footer = () => {
+export const Footer = () => {
 	return (
 		<div className="Footer">
 			<p className="Footer-title">Platzi Conf Merch</p>
@@ -6,5 +6,3 @@ const Footer = () => {
 		</div>
 	);
 };
-
-export { Footer };
