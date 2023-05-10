@@ -1,8 +1,9 @@
+import styles from "./Footer.module.scss";
+
 export const Footer = () => {
 	return (
-		<div className="Footer">
-			<p className="Footer-title">Platzi Conf Merch</p>
-			<p className="Footer-copy">Todos los Izquierdos Reservados</p>
-		</div>
+		<footer className={styles.footer}>
+			<p className={styles.footer__copy}>PlatziConf all-Left reserved</p>
+		</footer>
 	);
 };

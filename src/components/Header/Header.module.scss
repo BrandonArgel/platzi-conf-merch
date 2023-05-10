@@ -1,0 +1,50 @@
+@use '@styles/variables'as *;
+
+.header {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  height: $header-height;
+  padding: 0 2rem;
+  width: $max-width;
+  z-index: 1;
+
+  &__logo {
+    cursor: pointer;
+    color: $main-color;
+    font-size: $fz-lg;
+  }
+
+  &__link {
+    color: $main-color;
+    font-size: $fz-md;
+  }
+
+  &__checkout {
+    display: flex;
+    width: 50px;
+    height: 40px;
+    position: relative;
+    justify-content: space-evenly;
+    align-items: center;
+    justify-items: center;
+  }
+
+  &__checkout_cant {
+    width: 20px;
+    height: 20px;
+    position: absolute;
+    top: -7px;
+    left: 25px;
+    margin-left: 5px;
+    border-radius: 50%;
+    text-align: center;
+    vertical-align: middle;
+    @include font-style($main-font, 400, 1.2rem, 0px, $main-color);
+  }
+
+  &__checkout_cart:hover {
+    transform: scale(1.1);
+  }
+
+}

@@ -1,0 +1,13 @@
+@use "@styles/variables"as *;
+
+.footer {
+  display: flex;
+  justify-content: center;
+  margin-top: auto;
+  padding: 10px;
+  width: 100%;
+
+  &__copy {
+    @include font-style($main-font, 400, 1.4rem, 1px, $text-color);
+  }
+}

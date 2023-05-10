@@ -1,11 +1,10 @@
-import { initialState } from "../../initialState";
 import { Products } from "@components";
 import { useStore } from "@context";
 
 const Home = () => {
-	const { products } = initialState;
-	const { state } = useStore();
-	console.log(state);
+	const {
+		state: { products },
+	} = useStore();
 
 	return (
 		<div>

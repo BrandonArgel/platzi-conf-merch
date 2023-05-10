@@ -1,8 +1,11 @@
-import React, { createContext, useContext, useEffect, useReducer } from "react";
+import React, { createContext, useContext, useEffect, useReducer, useState } from "react";
 import { useLocalStorage } from "@hooks";
+import { getProducts } from "@utils";
 import { Product } from "@models";
+import { type } from "os";
 
 type StoreState = {
+	products?: Product[];
 	cart: Product[];
 	cartItems: number;
 };
@@ -21,6 +24,7 @@ type StoreContextType = {
 };
 
 const initialState: StoreState = {
+	products: [],
 	cart: [],
 	cartItems: 0,
 };
@@ -53,9 +57,25 @@ const storeContext = createContext<StoreContextType>({
 const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 	const [state, dispatch] = useReducer(storeReducer, initialState);
 	const [storedValue, setStoredValue] = useLocalStorage<StoreState>("store", initialState);
+	const [loading, setLoading] = useState<boolean>(true);
+	const [error, setError] = useState<string>("");
 
-	const initializeStore = (payload: StoreState) => {
-		dispatch({ type: "INITIALIZE_STORE", payload });
+	const initializeStore = async (payload: StoreState) => {
+		setLoading(true);
+
+		try {
+			payload.products = await getProducts();
+			console.log({ products: payload.products });
+			dispatch({ type: "INITIALIZE_STORE", payload });
+		} catch (error) {
+			let errorMessage = "An error has occurred fetching the products.";
+			if (error instanceof Error) {
+				errorMessage = error.message;
+			}
+			setError(errorMessage);
+		} finally {
+			setLoading(false);
+		}
 	};
 
 	const addToCart = (payload: Product) => {
@@ -76,6 +96,8 @@ const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ children }) =>
 
 	const value = {
 		state,
+		loading,
+		error,
 		addToCart,
 		removeFromCart,
 	};

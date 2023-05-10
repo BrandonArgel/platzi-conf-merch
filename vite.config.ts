@@ -30,9 +30,7 @@ interface config {
 /**
  * Initial configuration for Vite
  */
-export default defineConfig(({ command, mode }) => {
-  console.log({ command, mode })
-
+export default defineConfig(({ mode }) => {
   const config: config = {
     plugins: [react()],
     resolve: {
