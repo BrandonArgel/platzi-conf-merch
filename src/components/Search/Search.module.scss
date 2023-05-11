@@ -1,0 +1,59 @@
+@use '@styles/variables'as *;
+
+.search {
+  align-items: center;
+  background: transparent;
+  border: 1px solid $main-color;
+  border-radius: 1rem;
+  box-shadow: 0 0 1rem 0 $main-color;
+  display: flex;
+  height: 4rem;
+  justify-content: space-between;
+  transition: all 0.3s ease-in-out;
+  width: 100%;
+  will-change: box-shadow;
+
+  &:hover,
+  &:active,
+  &:focus {
+    box-shadow: 0 0 1rem 0.3rem $main-color;
+  }
+
+  &__input {
+    @include font-style($main-font, normal, $fz-xs, 0px, $main-color);
+
+    border: none;
+    background-color: transparent;
+    caret-color: rgba($main-color, 0.8);
+    height: 100%;
+    overflow-x: hidden;
+    padding: 0.5rem 1rem;
+    text-overflow: ellipsis;
+    width: 100%;
+    white-space: nowrap;
+
+    &::-webkit-search-cancel-button {
+      -webkit-appearance: none;
+    }
+
+    &:focus {
+      outline: none;
+    }
+
+    &::placeholder {
+      @include font-style($main-font, normal, $fz-xs, 0px, $main-color);
+
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+  }
+
+  &__button {
+    background-color: $main-color;
+    border: none;
+    border-radius: 0 0.7rem 0.7rem 0;
+    cursor: pointer;
+    height: 100%;
+    width: 4rem;
+  }
+}

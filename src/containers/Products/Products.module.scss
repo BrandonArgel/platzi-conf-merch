@@ -1,5 +1,22 @@
+@use '@styles/variables'as *;
+
 .products {
   display: grid;
   gap: 2rem;
-  grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr));
+  grid-template-columns: repeat(auto-fill,minmax(18rem,1fr));
+  padding-block-start: 2rem;
+
+  &__loader {
+    @include single-grid-item();
+  }
+
+  &__error {
+    @include single-grid-item();
+    @include font-style($main-font, normal, $fz-xs, 0px, $error);
+  }
+
+  &__empty {
+    @include single-grid-item();
+    @include font-style($main-font, normal, $fz-xs, 0px, $main-text-color);
+  }
 }

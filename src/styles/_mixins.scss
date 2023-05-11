@@ -8,3 +8,9 @@
   letter-spacing: $letterSpacing;
   color: $f-color;
 }
+
+@mixin single-grid-item() {
+  display: flex;
+  grid-column: 1 / -1;
+  justify-content: center;
+}
