@@ -5,14 +5,13 @@
   display: flex;
   justify-content: space-between;
   height: $header-height;
-  padding: 0 2rem;
-  width: $max-width;
+  max-width: $max-width;
   z-index: 1;
 
   &__logo {
     cursor: pointer;
     color: $main-color;
-    font-size: $fz-lg;
+    font-size: clamp(1.2rem, 2vw, 2.5rem);
   }
 
   &__link {
@@ -21,30 +20,22 @@
   }
 
   &__checkout {
-    display: flex;
-    width: 50px;
-    height: 40px;
     position: relative;
-    justify-content: space-evenly;
+  }
+
+  &__cant {
+    @include font-style($main-font, normal, 1.2rem, 0px, $main-color);
+
     align-items: center;
-    justify-items: center;
-  }
-
-  &__checkout_cant {
-    width: 20px;
-    height: 20px;
-    position: absolute;
-    top: -7px;
-    left: 25px;
-    margin-left: 5px;
     border-radius: 50%;
-    text-align: center;
-    vertical-align: middle;
-    @include font-style($main-font, 400, 1.2rem, 0px, $main-color);
+    color: $text-color;
+    display: flex;
+    height: 2rem;
+    justify-content: center;
+    position: absolute;
+    width: 2rem;
+    top: 0;
+    right: 0;
+    transform: translateY(-100%);
   }
-
-  &__checkout_cart:hover {
-    transform: scale(1.1);
-  }
-
 }

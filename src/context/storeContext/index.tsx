@@ -1,12 +1,9 @@
-import React, { createContext, useContext, useEffect, useReducer, useState } from "react";
+import React, { createContext, useContext, useEffect, useReducer } from "react";
 import { useLocalStorage } from "@hooks";
-import { getProducts } from "@utils";
-import { Product } from "@models";
-import { type } from "os";
+import { ProductModel } from "@models";
 
 type StoreState = {
-	products?: Product[];
-	cart: Product[];
+	cart: ProductModel[];
 	cartItems: number;
 };
 
@@ -19,12 +16,11 @@ type StoreAction = {
 
 type StoreContextType = {
 	state: StoreState;
-	addToCart: (payload: Product) => void;
-	removeFromCart: (payload: Product) => void;
+	addToCart: (payload: ProductModel) => void;
+	removeFromCart: (payload: ProductModel) => void;
 };
 
 const initialState: StoreState = {
-	products: [],
 	cart: [],
 	cartItems: 0,
 };
@@ -33,11 +29,11 @@ const storeMethods = {
 	INITIALIZE_STORE: (state: StoreState, payload: StoreState) => {
 		return { ...state, ...payload };
 	},
-	ADD_TO_CART: (state: StoreState, payload: Product) => {
+	ADD_TO_CART: (state: StoreState, payload: ProductModel) => {
 		const cart = [...state.cart, payload];
 		return { ...state, cart, cartItems: cart.length };
 	},
-	REMOVE_FROM_CART: (state: StoreState, payload: Product) => {
+	REMOVE_FROM_CART: (state: StoreState, payload: ProductModel) => {
 		const cart = state.cart.filter((item) => item.id !== payload.id);
 		return { ...state, cart, cartItems: cart.length };
 	},
@@ -57,32 +53,16 @@ const storeContext = createContext<StoreContextType>({
 const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 	const [state, dispatch] = useReducer(storeReducer, initialState);
 	const [storedValue, setStoredValue] = useLocalStorage<StoreState>("store", initialState);
-	const [loading, setLoading] = useState<boolean>(true);
-	const [error, setError] = useState<string>("");
 
 	const initializeStore = async (payload: StoreState) => {
-		setLoading(true);
-
-		try {
-			payload.products = await getProducts();
-			console.log({ products: payload.products });
-			dispatch({ type: "INITIALIZE_STORE", payload });
-		} catch (error) {
-			let errorMessage = "An error has occurred fetching the products.";
-			if (error instanceof Error) {
-				errorMessage = error.message;
-			}
-			setError(errorMessage);
-		} finally {
-			setLoading(false);
-		}
+		dispatch({ type: "INITIALIZE_STORE", payload });
 	};
 
-	const addToCart = (payload: Product) => {
+	const addToCart = (payload: ProductModel) => {
 		dispatch({ type: "ADD_TO_CART", payload });
 	};
 
-	const removeFromCart = (payload: Product) => {
+	const removeFromCart = (payload: ProductModel) => {
 		dispatch({ type: "REMOVE_FROM_CART", payload });
 	};
 
@@ -96,8 +76,6 @@ const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ children }) =>
 
 	const value = {
 		state,
-		loading,
-		error,
 		addToCart,
 		removeFromCart,
 	};

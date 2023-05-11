@@ -6,6 +6,7 @@ import react from '@vitejs/plugin-react'
 const paths = [
   "assets",
   "components",
+  "containers",
   "context",
   "hooks",
   "models",

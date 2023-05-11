@@ -1,14 +1,14 @@
-type Rating = {
-	count: number;
-	rate: number;
-}
+import { BaseModel } from "@models";
 
-export interface Product {
-	id: string;
-	image: string;
+export interface ProductModel extends BaseModel {
 	title: string;
 	price: number;
 	description: string;
-	category: string;
-	rating: Rating;
+	images: string[];
+	category: CategoryModel;
+}
+
+export interface CategoryModel extends BaseModel {
+	name: string;
+	image: string;
 }

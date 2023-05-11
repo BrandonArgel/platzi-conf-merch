@@ -1,9 +1,9 @@
-@forward './functions';
+@import './functions';
 
 @mixin font-style($family, $weight, $f-size, $letterSpacing, $f-color) {
   font-family: $family;
   font-weight: $weight;
-  line-height: calc-line-Height($f-size);
+  line-height: calculateLineHeight($f-size);
   font-size: $f-size;
   letter-spacing: $letterSpacing;
   color: $f-color;

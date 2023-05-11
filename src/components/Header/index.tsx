@@ -15,7 +15,8 @@ export const Header = () => {
 				<Link to="/checkout" className={styles.header__link}>
 					<i className="fas fa-shopping-basket"></i>
 				</Link>
-				{cart.length ? <div className={styles.header__checkout_cant}>{cart.length}</div> : null}
+				{/* {cart.length ? <div className={styles.header__cant}>{cart.length}</div> : null} */}
+				{<div className={styles.header__cant}>{cart.length || 1}</div>}
 			</div>
 		</header>
 	);

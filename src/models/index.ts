@@ -1,1 +1,2 @@
-export type { Product } from "./Product.model";
+export type { BaseModel } from "./Base.model";
+export type { CategoryModel, ProductModel } from "./Product.model";

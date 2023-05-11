@@ -8,6 +8,6 @@
   width: 100%;
 
   &__copy {
-    @include font-style($main-font, 400, 1.4rem, 1px, $text-color);
+    @include font-style($main-font, 400, $fz-xs, 0px, $text-color);
   }
 }
