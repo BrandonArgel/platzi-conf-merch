@@ -1,5 +1,6 @@
 export { Checkout } from './Checkout'
 export { Home } from './Home'
+export { Product } from './Product'
 export { Information } from './Information'
 export { Payment } from './Payment'
 export { Success } from './Success'

@@ -7,14 +7,15 @@ type PriceRange = {
 	max: number;
 };
 
-type FiltersState = {
+type SearchState = {
 	initialized: boolean;
 	products: ProductModel[];
 	params: URLSearchParams;
+	page: number;
 };
 
-type FiltersActions =
-	| "INITIALIZE_FILTERS"
+type SearchActions =
+	| "INITIALIZE_SEARCH"
 	| "UPDATE_PRODUCTS"
 	| "SET_SEARCH"
 	| "RESET_SEARCH"
@@ -25,33 +26,35 @@ type FiltersActions =
 	| "SET_PRICE"
 	| "RESET_PRICE"
 	| "SET_PRICE_RANGE"
-	| "RESET_PRICE_RANGE";
+	| "RESET_PRICE_RANGE"
+	| "RESET_ALL";
 
-type FiltersAction = {
-	type: FiltersActions;
+type SearchAction = {
+	type: SearchActions;
 	payload?: any;
 };
 
-type FiltersContextType = {
-	state: FiltersState;
+type SearchContextType = {
+	state: SearchState;
 	loading: boolean;
 	setLoading: (payload: boolean) => void;
 	error: string;
 	setError: (payload: string) => void;
-	setSearchFilters: (payload: string) => void;
-	resetSearchFilters: () => void;
-	setPageFilters: (payload: number) => void;
-	resetPageFilters: () => void;
-	setCategoryFilters: (payload: number) => void;
-	resetCategoryFilters: () => void;
-	setPriceFilters: (payload: number) => void;
-	resetPriceFilters: () => void;
-	setPriceRangeFilters: (payload: PriceRange) => void;
-	resetPriceRangeFilters: () => void;
+	setSearch: (payload: string) => void;
+	resetSearch: () => void;
+	setPage: (payload: number) => void;
+	resetPage: () => void;
+	setCategory: (payload: number) => void;
+	resetCategory: () => void;
+	setPrice: (payload: number) => void;
+	resetPrice: () => void;
+	setPriceRange: (payload: PriceRange) => void;
+	resetPriceRange: () => void;
+	resetAll: () => void;
 };
 
-interface FiltersMethod<Payload, Return> {
-	(state: FiltersState, payload: Payload): Return;
+interface SearchMethod<Payload, Return> {
+	(state: SearchState, payload: Payload): Return;
 }
 
 const paramsAvailables = {
@@ -63,40 +66,41 @@ const paramsAvailables = {
 	max: "max",
 };
 
-const initialState: FiltersState = {
+const initialState: SearchState = {
 	initialized: false,
 	products: [],
 	params: new URLSearchParams(),
+	page: 1,
 };
 
-const setFiltersMethods: Record<string, FiltersMethod<any, FiltersState>> = {
-	INITIALIZE_FILTERS: (state: FiltersState, payload: FiltersState) => {
+const setSearchMethods: Record<string, SearchMethod<any, SearchState>> = {
+	INITIALIZE_SEARCH: (state: SearchState, payload: SearchState) => {
 		return { ...state, ...payload };
 	},
-	UPDATE_PRODUCTS: (state: FiltersState, payload: ProductModel[]) => {
+	UPDATE_PRODUCTS: (state: SearchState, payload: ProductModel[]) => {
 		return { ...state, products: payload };
 	},
-	SET_SEARCH: (state: FiltersState, payload: string) => {
+	SET_SEARCH: (state: SearchState, payload: string) => {
 		const params = new URLSearchParams(state.params);
 		params.set(paramsAvailables.search, payload);
 		return { ...state, params };
 	},
-	SET_PAGE: (state: FiltersState, payload: number) => {
+	SET_PAGE: (state: SearchState, payload: number) => {
 		const params = new URLSearchParams(state.params);
 		params.set(paramsAvailables.page, payload.toString());
-		return { ...state, params };
+		return { ...state, params, page: payload };
 	},
-	SET_CATEGORY: (state: FiltersState, payload: number) => {
+	SET_CATEGORY: (state: SearchState, payload: number) => {
 		const params = new URLSearchParams(state.params);
 		params.set(paramsAvailables.category, payload.toString());
 		return { ...state, params };
 	},
-	SET_PRICE: (state: FiltersState, payload: number) => {
+	SET_PRICE: (state: SearchState, payload: number) => {
 		const params = new URLSearchParams(state.params);
 		params.set(paramsAvailables.price, payload.toString());
 		return { ...state, params };
 	},
-	SET_PRICE_RANGE: (state: FiltersState, payload: PriceRange) => {
+	SET_PRICE_RANGE: (state: SearchState, payload: PriceRange) => {
 		const params = new URLSearchParams(state.params);
 		params.set(paramsAvailables.min, payload.min.toString());
 		params.set(paramsAvailables.max, payload.max.toString());
@@ -104,45 +108,55 @@ const setFiltersMethods: Record<string, FiltersMethod<any, FiltersState>> = {
 	},
 };
 
-const resetFiltersMethod = (type: string, state: FiltersState) => {
+const resetSearchMethods = (type: string, state: SearchState) => {
 	const params = new URLSearchParams(state.params);
-	if (params.get(type)) params.delete(type);
-	else if (type.includes("PRICE_RANGE")) {
+	let page = state.page;
+	if (type.includes("page")) page = 1;
+	if (params.get(type)) {
+		params.delete(type);
+	} else if (type.includes("price_range")) {
 		params.delete(paramsAvailables.min);
 		params.delete(paramsAvailables.max);
 	}
-	return { ...state, params };
+
+	return { ...state, params, page };
 };
 
-const storeReducer = (state: FiltersState, action: FiltersAction) => {
+const storeReducer = (state: SearchState, action: SearchAction) => {
 	const { type, payload } = action;
 	if (type.includes("RESET")) {
 		const param = type.split("_")[1].toLowerCase();
-		return resetFiltersMethod(param, state);
+
+		if (param === "all") {
+			return initialState;
+		}
+
+		return resetSearchMethods(param, state);
 	}
 
-	return setFiltersMethods[type](state, payload);
+	return setSearchMethods[type](state, payload);
 };
 
-const storeContext = createContext<FiltersContextType>({
+const storeContext = createContext<SearchContextType>({
 	state: initialState,
 	loading: true,
 	setLoading: () => undefined,
 	error: "",
 	setError: () => undefined,
-	setSearchFilters: () => undefined,
-	resetSearchFilters: () => undefined,
-	setPageFilters: () => undefined,
-	resetPageFilters: () => undefined,
-	setCategoryFilters: () => undefined,
-	resetCategoryFilters: () => undefined,
-	setPriceFilters: () => undefined,
-	resetPriceFilters: () => undefined,
-	setPriceRangeFilters: () => undefined,
-	resetPriceRangeFilters: () => undefined,
+	setSearch: () => undefined,
+	resetSearch: () => undefined,
+	setPage: () => undefined,
+	resetPage: () => undefined,
+	setCategory: () => undefined,
+	resetCategory: () => undefined,
+	setPrice: () => undefined,
+	resetPrice: () => undefined,
+	setPriceRange: () => undefined,
+	resetPriceRange: () => undefined,
+	resetAll: () => undefined,
 });
 
-const FiltersProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+const SearchProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 	const [state, dispatch] = useReducer(storeReducer, initialState);
 	const [loading, setLoading] = useState<boolean>(true);
 	const [error, setError] = useState<string>("");
@@ -191,7 +205,7 @@ const FiltersProvider: React.FC<{ children: React.ReactNode }> = ({ children }) 
 		await getProductsFromParams(params);
 
 		dispatch({
-			type: "INITIALIZE_FILTERS",
+			type: "INITIALIZE_SEARCH",
 			payload: {
 				params,
 				initialized: true,
@@ -199,81 +213,90 @@ const FiltersProvider: React.FC<{ children: React.ReactNode }> = ({ children }) 
 		});
 	};
 
-	const setSearchFilters = (search: string) => {
+	const setSearch = (search: string) => {
 		dispatch({
 			type: "SET_SEARCH",
 			payload: search,
 		});
+		resetPage();
 	};
 
-	const resetSearchFilters = () => {
+	const resetSearch = () => {
 		dispatch({
 			type: "RESET_SEARCH",
 		});
 	};
 
-	const setPageFilters = (page: number) => {
+	const setPage = (page: number) => {
 		dispatch({
 			type: "SET_PAGE",
 			payload: page,
 		});
 	};
 
-	const resetPageFilters = () => {
+	const resetPage = () => {
 		dispatch({
 			type: "RESET_PAGE",
 		});
 	};
 
-	const setCategoryFilters = (category: number) => {
+	const setCategory = (category: number) => {
 		dispatch({
 			type: "SET_CATEGORY",
 			payload: category,
 		});
 	};
 
-	const resetCategoryFilters = () => {
+	const resetCategory = () => {
 		dispatch({
 			type: "RESET_CATEGORY",
 		});
 	};
 
-	const setPriceFilters = (price: number) => {
+	const setPrice = (price: number) => {
 		dispatch({
 			type: "SET_PRICE",
 			payload: price,
 		});
 
-		resetPriceRangeFilters();
+		resetPriceRange();
 	};
 
-	const resetPriceFilters = () => {
+	const resetPrice = () => {
 		dispatch({
 			type: "RESET_PRICE",
 		});
 	};
 
-	const setPriceRangeFilters = (priceRange: PriceRange) => {
+	const setPriceRange = (priceRange: PriceRange) => {
 		dispatch({
 			type: "SET_PRICE_RANGE",
 			payload: priceRange,
 		});
 
-		resetPriceFilters();
+		resetPrice();
 	};
 
-	const resetPriceRangeFilters = () => {
+	const resetPriceRange = () => {
 		dispatch({
 			type: "RESET_PRICE_RANGE",
+		});
+	};
+
+	const resetAll = () => {
+		dispatch({
+			type: "RESET_ALL",
 		});
 	};
 
 	useEffect(() => {
 		if (!state.initialized) {
 			initializeStore();
-		} else if (state.params.toString() !== window.location.search) {
+		} else if (`?${state.params.toString()}` !== window.location.search) {
 			updateURL(state.params);
 			getProductsFromParams(state.params);
+		} else {
+			updateURL(state.params);
 		}
 	}, [state.params]); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -283,27 +306,28 @@ const FiltersProvider: React.FC<{ children: React.ReactNode }> = ({ children }) 
 		setLoading,
 		error,
 		setError,
-		setSearchFilters,
-		resetSearchFilters,
-		setPageFilters,
-		resetPageFilters,
-		setCategoryFilters,
-		resetCategoryFilters,
-		setPriceFilters,
-		resetPriceFilters,
-		setPriceRangeFilters,
-		resetPriceRangeFilters,
+		setSearch,
+		resetSearch,
+		setPage,
+		resetPage,
+		setCategory,
+		resetCategory,
+		setPrice,
+		resetPrice,
+		setPriceRange,
+		resetPriceRange,
+		resetAll,
 	};
 
 	return <storeContext.Provider value={value}>{children}</storeContext.Provider>;
 };
 
-const useFilters = () => {
+const useSearch = () => {
 	const context = useContext(storeContext);
 	if (context === undefined) {
-		throw new Error("useFilters must be used within a FiltersProvider");
+		throw new Error("useSearch must be used within a SearchProvider");
 	}
 	return context;
 };
 
-export { useFilters, FiltersProvider };
+export { useSearch, SearchProvider };

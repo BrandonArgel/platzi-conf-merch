@@ -1,0 +1,35 @@
+@use '@styles/variables'as *;
+
+.button {
+  @include font-style($main-font, normal, $fz-xs, 0px, $main-text-color);
+
+  background-color: $main-color;
+  border: none;
+  border-radius: 0.5rem;
+  color: $main-text-color;
+  cursor: pointer;
+  padding: 0.5rem 1rem;
+  transition: all 0.3s ease-in-out;
+  user-select: none;
+
+  &[disabled] {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+
+  &:not([disabled]):hover,
+  &:not([disabled]):focus {
+    filter: brightness(1.05);
+    transform: scale(1.05);
+  }
+
+  &:not([disabled]):active {
+    filter: brightness(0.95);
+    transform: scale(0.95);
+    transition: all 0.1s ease-in-out;
+  }
+
+  &:not([disabled]):focus {
+    outline: none;
+  }
+}

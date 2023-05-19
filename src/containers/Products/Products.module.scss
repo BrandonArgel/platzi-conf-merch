@@ -3,8 +3,8 @@
 .products {
   display: grid;
   gap: 2rem;
-  grid-template-columns: repeat(auto-fill,minmax(18rem,1fr));
-  padding-block-start: 2rem;
+  grid-template-columns: repeat(auto-fill,minmax(20rem,1fr));
+  padding-block: 2rem;
 
   &__loader {
     @include single-grid-item();

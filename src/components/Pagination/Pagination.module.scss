@@ -1,0 +1,16 @@
+@use '@styles/variables'as *;
+
+.pagination {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  margin: 0 auto;
+  max-width: $max-width;
+  width: 100%;
+
+  span {
+    @include font-style($main-font, normal, $fz-xs, 0px, $main-text-color);
+
+    padding: 0 1rem;
+  }
+}

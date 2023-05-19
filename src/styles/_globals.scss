@@ -16,14 +16,17 @@ body {
   background-color: $bg-color;
   font-family: $main-font;
   scroll-behavior: smooth;
+  min-height: 100vh;
 }
 
-main {
+#root {
   display: flex;
   flex-flow: column nowrap;
-  margin: 0 auto;
-  max-width: $max-width;
+  min-height: 100vh;
+  overflow: hidden;
   padding: 2rem;
+  max-width: $max-width;
+  margin: 0 auto;
 }
 
 a {
@@ -62,4 +65,57 @@ a {
 :focus {
   outline: 2px dashed $main-color;
   outline-offset: 3px;
+}
+
+.hide {
+  animation: fadeOut 0.3s ease-in-out forwards;
+  opacity: 0 !important;
+  visibility: hidden !important;
+}
+
+@keyframes fadeOut {
+  0% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translateY(-1rem);
+  }
+}
+
+.show {
+  animation: fadeIn 0.3s ease-in-out forwards;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(-2rem);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.skeleton {
+  animation: bg-skeleton 1.5s infinite;
+  background:
+    linear-gradient(0.25turn, transparent, rgba($main-color, 0.2), transparent),
+    linear-gradient(rgba($main-color, 0.1), rgba($main-color, 0.1));
+  background-repeat: no-repeat;
+  background-size: 40rem 100%, 100% 100%;
+  background-position: -40rem 0, 0 0;
+  cursor: progress;
+}
+
+@keyframes bg-skeleton {
+  to {
+    background-position: 40rem 0, 0 0;
+  }
 }

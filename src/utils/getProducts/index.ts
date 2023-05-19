@@ -1,6 +1,6 @@
+import { API_URL } from '@utils';
 import { ProductModel } from '@models';
 
-const API_URL = 'https://api.escuelajs.co/api/v1';
 const LIMIT = 20;
 
 export const getProducts = async (query: URLSearchParams): Promise<ProductModel[]> => {

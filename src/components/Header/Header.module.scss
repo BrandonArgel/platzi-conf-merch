@@ -20,22 +20,16 @@
   }
 
   &__checkout {
-    position: relative;
+    display: flex;
+    align-items: end;
+    gap: 0.5rem;
   }
 
   &__cant {
     @include font-style($main-font, normal, 1.2rem, 0px, $main-color);
 
-    align-items: center;
     border-radius: 50%;
-    color: $main-text-color;
     display: flex;
-    height: 2rem;
-    justify-content: center;
-    position: absolute;
-    width: 2rem;
-    top: 0;
-    right: 0;
-    transform: translateY(-100%);
+
   }
 }

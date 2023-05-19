@@ -1,18 +1,19 @@
 import { Suspense } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { Checkout, Home, Information, NotFound, Payment, Success } from "@pages";
-import { Layout } from "@components";
-import { StoreProvider, FiltersProvider } from "@context";
+import { Checkout, Home, Information, NotFound, Payment, Success, Product } from "@pages";
+import { Layout } from "@containers";
+import { StoreProvider, SearchProvider } from "@context";
 
 const App = () => {
 	return (
-		<FiltersProvider>
+		<SearchProvider>
 			<StoreProvider>
 				<BrowserRouter>
 					<Suspense fallback={<Loader />}>
 						<Routes>
 							<Route path="/" element={<Layout />}>
 								<Route index element={<Home />} />
+								<Route path="/:id" element={<Product />} />
 								<Route path="/checkout" element={<Checkout />} />
 								<Route path="/checkout/information" element={<Information />} />
 								<Route path="/checkout/payment" element={<Payment />} />
@@ -23,7 +24,7 @@ const App = () => {
 					</Suspense>
 				</BrowserRouter>
 			</StoreProvider>
-		</FiltersProvider>
+		</SearchProvider>
 	);
 };
 

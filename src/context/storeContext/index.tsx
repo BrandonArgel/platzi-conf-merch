@@ -4,7 +4,7 @@ import { ProductModel } from "@models";
 
 type StoreState = {
 	cart: ProductModel[];
-	cartItems: number;
+	cartCounter: number;
 };
 
 type StoreActions = "INITIALIZE_STORE" | "ADD_TO_CART" | "REMOVE_FROM_CART";
@@ -17,12 +17,12 @@ type StoreAction = {
 type StoreContextType = {
 	state: StoreState;
 	addToCart: (payload: ProductModel) => void;
-	removeFromCart: (payload: ProductModel) => void;
+	removeFromCart: (payload: number) => void;
 };
 
 const initialState: StoreState = {
 	cart: [],
-	cartItems: 0,
+	cartCounter: 0,
 };
 
 const storeMethods = {
@@ -31,11 +31,11 @@ const storeMethods = {
 	},
 	ADD_TO_CART: (state: StoreState, payload: ProductModel) => {
 		const cart = [...state.cart, payload];
-		return { ...state, cart, cartItems: cart.length };
+		return { ...state, cart, cartCounter: cart.length };
 	},
-	REMOVE_FROM_CART: (state: StoreState, payload: ProductModel) => {
-		const cart = state.cart.filter((item) => item.id !== payload.id);
-		return { ...state, cart, cartItems: cart.length };
+	REMOVE_FROM_CART: (state: StoreState, payload: number) => {
+		const cart = state.cart.filter((_, index) => index !== payload);
+		return { ...state, cart, cartCounter: cart.length };
 	},
 };
 
@@ -62,7 +62,7 @@ const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ children }) =>
 		dispatch({ type: "ADD_TO_CART", payload });
 	};
 
-	const removeFromCart = (payload: ProductModel) => {
+	const removeFromCart = (payload: number) => {
 		dispatch({ type: "REMOVE_FROM_CART", payload });
 	};
 

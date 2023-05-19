@@ -5,16 +5,22 @@
   border-radius: $border-radius;
   border: none;
   cursor: pointer;
+  display: grid;
+  gap: 1rem;
+  grid-template-rows: 1fr auto;
   outline: none;
 
-  &__image {
-    margin-block-end: 0.5rem;
+  &__figure {
+    box-shadow: 0 0 2rem 0 rgba($main-text-color, 0.2);
+    border-radius: $border-radius;
+    height: 100%;
     position: relative;
     width: 100%;
 
     img {
-      border-radius: 0.5rem;
-      height: auto;
+      aspect-ratio: 1 / 1;
+      border-radius: $border-radius;
+      height: 100%;
       object-fit: cover;
       width: 100%;
       vertical-align: middle;
@@ -41,7 +47,11 @@
   &__title {
     @include font-style($main-font, normal, $fz-xs, 0px, $main-text-color);
 
-    text-overflow: ellipsis;
+    display: -webkit-box;
+    overflow: hidden;
+    text-align: left;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
   }
 
   &__price {

@@ -1,0 +1,98 @@
+@use '@styles/variables'as *;
+
+.container {
+  display: grid;
+  grid-template-areas:
+    "title title"
+    "thumbnails image"
+    "content content";
+  grid-template-columns: 5rem 1fr;
+  gap: 1rem;
+}
+
+.title {
+  @include font-style($main-font, bold, 2rem, 0px, $main-text-color);
+
+  grid-area: title;
+}
+
+.thumbnails {
+  display: flex;
+  flex-flow: column nowrap;
+  list-style: none;
+  gap: 0.5rem;
+  grid-area: thumbnails;
+  width: 5rem;
+
+  &__item {
+    border: 1px solid $main-text-color;
+    cursor: pointer;
+    border-radius: $border-radius;
+    height: 5rem;
+    width: 100%;
+
+    & img {
+      object-fit: cover;
+      vertical-align: middle;
+      height: 100%;
+      width: 100%;
+    }
+
+    &:hover,
+    &:focus,
+    &:active,
+    &.active {
+      outline: 3px solid rgba($main-color, 0.75);
+    }
+  }
+}
+
+.image {
+  grid-area: image;
+  width: 100%;
+
+  & img {
+    object-fit: cover;
+    vertical-align: middle;
+    height: 100%;
+    width: 100%;
+  }
+}
+
+.content {
+  border-radius: $border-radius;
+  border: 2px solid $stroke-color;
+  display: flex;
+  flex-flow: column nowrap;
+  gap: 1rem;
+  grid-area: content;
+  padding: 1rem;
+
+  &__price {
+    @include font-style($main-font, bold, 1.5rem, 0px, $main-text-color);
+  }
+
+  &__description {
+    @include font-style($main-font, normal, 1rem, 0px, $main-text-color);
+  }
+
+  &__add {
+    @include font-style($main-font, bold, 1.5rem, 0px, $main-text-color);
+
+    border: 1px solid $main-text-color;
+    border-radius: $border-radius;
+    cursor: pointer;
+    padding: 0.5rem 1rem;
+    margin-top: auto;
+  }
+}
+
+@media screen and (min-width: $tablet) {
+  .container {
+    grid-template-areas:
+      "title title title"
+      "thumbnails image content";
+    grid-template-columns: 5rem 2fr 1fr;
+    gap: 1rem;
+  }
+}

@@ -1,2 +1,2 @@
 export { useStore, StoreProvider } from "./storeContext";
-export { useFilters, FiltersProvider } from "./filtersContext";
+export { useSearch, SearchProvider } from "./searchContext";

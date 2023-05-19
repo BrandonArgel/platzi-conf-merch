@@ -5,7 +5,7 @@
   background: transparent;
   border: 1px solid $main-color;
   border-radius: 1rem;
-  box-shadow: 0 0 1rem 0 $main-color;
+  box-shadow: 0 0 1rem 0 rgba($main-color, 0.5);
   display: flex;
   height: 4rem;
   justify-content: space-between;

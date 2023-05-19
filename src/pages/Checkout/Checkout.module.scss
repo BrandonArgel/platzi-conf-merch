@@ -1,0 +1,93 @@
+@use '@styles/variables'as *;
+
+.container {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+}
+
+.title {
+  @include font-style($main-font, bold, 2rem, 0px, $main-text-color);
+}
+
+.empty {
+  @include font-style($main-font, normal, $fz-md, 0px, $main-text-color);
+
+  margin: 2rem 0;
+}
+
+.list {
+  display: grid;
+  gap: 1rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+
+  &__item {
+    display: grid;
+    height: 5rem;
+    grid-template-columns: 1fr 5rem;
+    gap: 1rem;
+  }
+
+  &__details {
+    align-items: center;
+    border-bottom: 1px solid $stroke-color;
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    height: inherit;
+  }
+
+  &__info {
+    align-items: center;
+    cursor: pointer;
+    display: flex;
+    height: inherit;
+    gap: 1rem;
+  }
+
+  &__image {
+    border-radius: $border-radius;
+    object-fit: cover;
+    vertical-align: middle;
+    height: inherit;
+  }
+
+  &__title {
+    @include font-style($main-font, normal, $fz-md, 0px, $main-text-color);
+  }
+
+  &__price {
+    @include font-style($main-font, bold, $fz-md, 0px, $main-text-color);
+  }
+
+  button {
+    background: none;
+
+    i {
+      color: $main-color;
+      font-size: $fz-md;
+    }
+  }
+}
+
+.checkout {
+  display: flex;
+  flex-flow: column nowrap;
+  gap: 1rem;
+
+  &__title {
+    @include font-style($main-font, bold, $fz-md, 0px, $main-text-color);
+  }
+
+  button {
+    @include font-style($main-font, bold, $fz-xs, 0px, $main-text-color);
+  }
+}
+
+@media screen and (min-width: $tablet) {
+  .container {
+    grid-template-columns: 2fr 1fr;
+  }
+}
