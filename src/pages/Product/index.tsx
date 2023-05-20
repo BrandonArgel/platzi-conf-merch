@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useStore } from "@context";
 import { Button, Loader } from "@components";
@@ -9,10 +9,11 @@ import styles from "./Product.module.scss";
 // TODO: Handle errors when there is no product
 
 export const Product = () => {
+	const navigate = useNavigate();
 	const { id } = useParams();
 	const { addToCart } = useStore();
 	const [loading, setLoading] = useState<boolean>(true);
-	const [error, setError] = useState<string>("");
+	const [empty, setEmpty] = useState<boolean>(false);
 	const [product, setProduct] = useState<ProductModel | null>(null);
 	const [currentImage, setCurrentImage] = useState<string | undefined>("");
 
@@ -23,11 +24,7 @@ export const Product = () => {
 			setProduct(product);
 			setCurrentImage(product.images[0]);
 		} catch (error) {
-			let errorMessage = "An error has occurred fetching the product.";
-			if (error instanceof Error) {
-				errorMessage = error.message;
-			}
-			setError(errorMessage);
+			setEmpty(true);
 		} finally {
 			setLoading(false);
 		}
@@ -38,16 +35,19 @@ export const Product = () => {
 	}, [id]); // eslint-disable-line react-hooks/exhaustive-deps
 
 	return (
-		<div>
+		<div className={styles.container}>
 			{loading ? (
-				<Loader />
-			) : error ? (
-				<div>
-					<p aria-live="assertive">{error}</p>
+				<div className={styles.loader}>
+					<Loader />
+				</div>
+			) : empty ? (
+				<div className={styles.empty}>
+					<p>This product does not exist.</p>
+					<Button onClick={() => navigate("/")}>Go back home</Button>
 				</div>
 			) : (
 				product && (
-					<div className={styles.container}>
+					<>
 						<h2 className={styles.title}>{product.title}</h2>
 						<ul className={styles.thumbnails}>
 							{product.images.map((image, index) => (
@@ -70,7 +70,7 @@ export const Product = () => {
 								Agregar al carrito
 							</Button>
 						</div>
-					</div>
+					</>
 				)
 			)}
 		</div>

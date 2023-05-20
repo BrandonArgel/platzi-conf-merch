@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useEffect, useReducer, useState } from "react";
-import { getProducts } from "@utils";
-import { ProductModel } from "@models";
+import { getCategories, getProducts } from "@utils";
+import { CategoryModel, ProductModel } from "@models";
 
 type PriceRange = {
 	min: number;
@@ -9,6 +9,7 @@ type PriceRange = {
 
 type SearchState = {
 	initialized: boolean;
+	categories: CategoryModel[];
 	products: ProductModel[];
 	params: URLSearchParams;
 	page: number;
@@ -17,6 +18,7 @@ type SearchState = {
 type SearchActions =
 	| "INITIALIZE_SEARCH"
 	| "UPDATE_PRODUCTS"
+	| "UPDATE_CATEGORIES"
 	| "SET_SEARCH"
 	| "RESET_SEARCH"
 	| "SET_PAGE"
@@ -45,6 +47,7 @@ type SearchContextType = {
 	setPage: (payload: number) => void;
 	resetPage: () => void;
 	setCategory: (payload: number) => void;
+	getCategoryId: () => number;
 	resetCategory: () => void;
 	setPrice: (payload: number) => void;
 	resetPrice: () => void;
@@ -68,6 +71,7 @@ const paramsAvailables = {
 
 const initialState: SearchState = {
 	initialized: false,
+	categories: [],
 	products: [],
 	params: new URLSearchParams(),
 	page: 1,
@@ -79,6 +83,9 @@ const setSearchMethods: Record<string, SearchMethod<any, SearchState>> = {
 	},
 	UPDATE_PRODUCTS: (state: SearchState, payload: ProductModel[]) => {
 		return { ...state, products: payload };
+	},
+	UPDATE_CATEGORIES: (state: SearchState, payload: CategoryModel[]) => {
+		return { ...state, categories: payload };
 	},
 	SET_SEARCH: (state: SearchState, payload: string) => {
 		const params = new URLSearchParams(state.params);
@@ -148,6 +155,7 @@ const storeContext = createContext<SearchContextType>({
 	setPage: () => undefined,
 	resetPage: () => undefined,
 	setCategory: () => undefined,
+	getCategoryId: () => 0,
 	resetCategory: () => undefined,
 	setPrice: () => undefined,
 	resetPrice: () => undefined,
@@ -182,10 +190,10 @@ const SearchProvider: React.FC<{ children: React.ReactNode }> = ({ children }) =
 
 	const getProductsFromParams = async (params: URLSearchParams) => {
 		try {
-			const results = await getProducts(params);
+			const products = await getProducts(params);
 			dispatch({
 				type: "UPDATE_PRODUCTS",
-				payload: results,
+				payload: products,
 			});
 		} catch (error) {
 			let errorMessage = "An error has occurred fetching the products.";
@@ -198,11 +206,28 @@ const SearchProvider: React.FC<{ children: React.ReactNode }> = ({ children }) =
 		}
 	};
 
+	const getCategoriesList = async () => {
+		try {
+			const categories = await getCategories();
+			dispatch({
+				type: "UPDATE_CATEGORIES",
+				payload: categories,
+			});
+		} catch (error) {
+			let errorMessage = "An error has occurred fetching the categories.";
+			if (error instanceof Error) {
+				errorMessage = error.message;
+			}
+			setError(errorMessage);
+		}
+	};
+
 	const initializeStore = async () => {
 		setLoading(true);
 
 		const params = getInitialParams();
 		await getProductsFromParams(params);
+		await getCategoriesList();
 
 		dispatch({
 			type: "INITIALIZE_SEARCH",
@@ -241,10 +266,20 @@ const SearchProvider: React.FC<{ children: React.ReactNode }> = ({ children }) =
 	};
 
 	const setCategory = (category: number) => {
-		dispatch({
-			type: "SET_CATEGORY",
-			payload: category,
-		});
+		if (category === Number(state.params.get(paramsAvailables.category))) {
+			resetCategory();
+		} else {
+			dispatch({
+				type: "SET_CATEGORY",
+				payload: category,
+			});
+		}
+		resetPage();
+	};
+
+	const getCategoryId = () => {
+		const categoryId = state.params.get(paramsAvailables.category);
+		return categoryId ? Number(categoryId) : 0;
 	};
 
 	const resetCategory = () => {
@@ -311,6 +346,7 @@ const SearchProvider: React.FC<{ children: React.ReactNode }> = ({ children }) =
 		setPage,
 		resetPage,
 		setCategory,
+		getCategoryId,
 		resetCategory,
 		setPrice,
 		resetPrice,

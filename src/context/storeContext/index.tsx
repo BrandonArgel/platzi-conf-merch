@@ -5,6 +5,7 @@ import { ProductModel } from "@models";
 type StoreState = {
 	cart: ProductModel[];
 	cartCounter: number;
+	cartTotal: number;
 };
 
 type StoreActions = "INITIALIZE_STORE" | "ADD_TO_CART" | "REMOVE_FROM_CART";
@@ -23,6 +24,7 @@ type StoreContextType = {
 const initialState: StoreState = {
 	cart: [],
 	cartCounter: 0,
+	cartTotal: 0,
 };
 
 const storeMethods = {
@@ -31,11 +33,15 @@ const storeMethods = {
 	},
 	ADD_TO_CART: (state: StoreState, payload: ProductModel) => {
 		const cart = [...state.cart, payload];
-		return { ...state, cart, cartCounter: cart.length };
+		const cartCounter = cart.length;
+		const cartTotal = cart.reduce((acc, curr) => acc + curr.price, 0);
+		return { ...state, cart, cartCounter, cartTotal };
 	},
 	REMOVE_FROM_CART: (state: StoreState, payload: number) => {
 		const cart = state.cart.filter((_, index) => index !== payload);
-		return { ...state, cart, cartCounter: cart.length };
+		const cartCounter = cart.length;
+		const cartTotal = cart.reduce((acc, curr) => acc + curr.price, 0);
+		return { ...state, cart, cartCounter, cartTotal };
 	},
 };
 

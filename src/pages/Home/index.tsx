@@ -1,18 +1,21 @@
 import { useState, useEffect } from "react";
-import { Search, Pagination, Product } from "@components";
-import { Products } from "@containers";
+import { Category, Search, Pagination, Product } from "@components";
+import { Categories, Products } from "@containers";
 import { useSearch } from "@context";
 import { useDebounce } from "@hooks";
 
 const Home = () => {
 	const {
-		state: { products, page },
+		state: { categories, products, page },
 		loading,
 		setLoading,
 		setSearch,
 		resetSearch,
 		setPage,
 		resetPage,
+		setCategory,
+		getCategoryId,
+		resetCategory,
 	} = useSearch();
 	const [newSearch, setNewSearch] = useState("");
 	const debouncedSearch = useDebounce(newSearch, 500);
@@ -54,6 +57,18 @@ const Home = () => {
 	return (
 		<>
 			<Search search={newSearch} placeholder="Search for products..." onChange={onSearch} />
+			<Categories>
+				<li onClick={resetCategory}>
+					<Category name="All" active={!getCategoryId()} />
+				</li>
+				{categories &&
+					categories.length > 0 &&
+					categories.map(({ name, id }) => (
+						<li key={id} onClick={() => setCategory(id)}>
+							<Category name={name} active={getCategoryId() === id} />
+						</li>
+					))}
+			</Categories>
 			<Products>
 				{products && products.map((product) => <Product key={product.id} {...product} />)}
 			</Products>

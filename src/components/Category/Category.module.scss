@@ -1,0 +1,9 @@
+@use '@styles/variables'as *;
+
+.category {
+  border-radius: 1rem;
+
+  &:not(.active) {
+    background-color: $stroke-color;
+  }
+}

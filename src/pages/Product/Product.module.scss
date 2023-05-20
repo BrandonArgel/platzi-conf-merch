@@ -10,6 +10,21 @@
   gap: 1rem;
 }
 
+.loader {
+  @include single-grid-item();
+}
+
+.empty {
+  @include single-grid-item();
+  @include font-style($main-font, normal, $fz-xs, 0px, $main-text-color);
+
+  align-items: center;
+  display: flex;
+  flex-flow: column nowrap;
+  gap: 1rem;
+  justify-content: center;
+}
+
 .title {
   @include font-style($main-font, bold, 2rem, 0px, $main-text-color);
 
@@ -49,6 +64,9 @@
 
 .image {
   grid-area: image;
+  max-height: 80vh;
+  object-fit: contain;
+  height: 100%;
   width: 100%;
 
   & img {
@@ -79,11 +97,13 @@
   &__add {
     @include font-style($main-font, bold, 1.5rem, 0px, $main-text-color);
 
+    align-self: center;
     border: 1px solid $main-text-color;
     border-radius: $border-radius;
     cursor: pointer;
     padding: 0.5rem 1rem;
     margin-top: auto;
+    max-width: fit-content;
   }
 }
 

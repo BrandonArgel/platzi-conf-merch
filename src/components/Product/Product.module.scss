@@ -35,7 +35,7 @@
   &__category {
     @include font-style($main-font, normal, $fz-xxs, 0px, $main-text-color);
 
-    background-color: rgba($bg-color, 0.8);
+    background-color: $main-color;
     border-radius: $border-radius;
     bottom: 0;
     left: 0;
