@@ -25,7 +25,7 @@ export const Product = () => {
 
 	/* Refs */
 	const [currentImage, setCurrentImage] = useState<string | undefined>("");
-	const [imgContainerCR, setImgContainerCR] = useState<DOMRect | undefined>(undefined);
+	const [imgCR, setImgCR] = useState<DOMRect | undefined>(undefined);
 	const [rectCR, setRectCR] = useState<DOMRect | undefined>(undefined);
 
 	/* Nodes */
@@ -49,6 +49,17 @@ export const Product = () => {
 		initialRequest();
 	}, [id]); // eslint-disable-line react-hooks/exhaustive-deps
 
+	const ImgRef = useCallback((node: HTMLImageElement) => {
+		if (node === null) return;
+		node.onload = () => {
+			setImgCR(node.getBoundingClientRect());
+		};
+
+		return () => {
+			node.onload = null;
+		};
+	}, []);
+
 	const rectRef = useCallback((node: HTMLImageElement) => {
 		if (node === null) return;
 		setRectNode(node);
@@ -60,78 +71,65 @@ export const Product = () => {
 		setZoomNode(node);
 	}, []);
 
-	const containerImgRef = useCallback(
-		(node: HTMLDivElement) => {
-			if (node === null) return;
+	const onMouseEnter = () => {
+		rectNode?.classList.add(styles.active);
+		zoomNode?.classList.add(styles.active);
+	};
 
-			const onMouseEnter = () => {
-				rectNode?.classList.add(styles.active);
-				zoomNode?.classList.add(styles.active);
-			};
+	const onMouseMove = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+		const { left, top, width, height } = imgCR || {
+			left: 0,
+			top: 0,
+			width: 0,
+			height: 0,
+		};
+		const { width: rectWidth, height: rectHeight } = rectCR || { width: 0, height: 0 };
+		const x = e.clientX - left;
+		const y = e.clientY - top;
+		const rectX = x - rectWidth / 2;
+		const rectY = y - rectHeight / 2;
+		const maxX = width - rectWidth;
+		const maxY = height - rectHeight;
+		let zoomX, zoomY;
 
-			const onMouseMove = (e: MouseEvent) => {
-				const { left, top, width, height } = imgContainerCR || {
-					left: 0,
-					top: 0,
-					width: 0,
-					height: 0,
-				};
-				const { width: rectWidth, height: rectHeight } = rectCR || { width: 0, height: 0 };
-				const x = e.clientX - left;
-				const y = e.clientY - top;
-				const rectX = x - rectWidth / 2;
-				const rectY = y - rectHeight / 2;
-				const maxX = width - rectWidth;
-				const maxY = height - rectHeight;
-				let zoomX, zoomY;
+		if (rectNode !== null) {
+			if (rectX < 0) {
+				rectNode.style.left = "0px";
+				zoomX = 0;
+			} else if (rectX > maxX) {
+				rectNode.style.left = `${maxX}px`;
+				zoomX = maxX;
+			} else {
+				rectNode.style.left = `${rectX}px`;
+				zoomX = rectX;
+			}
 
-				if (rectNode !== null) {
-					if (rectX < 0) {
-						rectNode.style.left = "0px";
-						zoomX = 0;
-					} else if (rectX > maxX) {
-						rectNode.style.left = `${maxX}px`;
-						zoomX = maxX;
-					} else {
-						rectNode.style.left = `${rectX}px`;
-						zoomX = rectX;
-					}
+			if (rectY < 0) {
+				rectNode.style.top = "0px";
+				zoomY = 0;
+			} else if (rectY > maxY) {
+				rectNode.style.top = `${maxY}px`;
+				zoomY = maxY;
+			} else {
+				rectNode.style.top = `${rectY}px`;
+				zoomY = rectY;
+			}
 
-					if (rectY < 0) {
-						rectNode.style.top = "0px";
-						zoomY = 0;
-					} else if (rectY > maxY) {
-						rectNode.style.top = `${maxY}px`;
-						zoomY = maxY;
-					} else {
-						rectNode.style.top = `${rectY}px`;
-						zoomY = rectY;
-					}
+			zoomX = zoomX * ratio;
+			zoomY = zoomY * ratio;
+		}
+		if (zoomNode !== null) {
+			zoomNode.style.backgroundSize = `${width * ratio}px ${height * ratio}px`;
+			zoomNode.style.width = `${rectWidth * ratio}px`;
+			zoomNode.style.height = `${rectHeight * ratio}px`;
+			zoomNode.style.backgroundPosition = `-${zoomX}px -${zoomY}px`;
+		}
+	};
 
-					zoomX = zoomX * ratio;
-					zoomY = zoomY * ratio;
-				}
-				if (zoomNode !== null) {
-					zoomNode.style.backgroundSize = `${width * ratio}px ${height * ratio}px`;
-					zoomNode.style.width = `${rectWidth * ratio}px`;
-					zoomNode.style.height = `${rectHeight * ratio}px`;
-					zoomNode.style.backgroundPosition = `-${zoomX}px -${zoomY}px`;
-				}
-			};
-
-			const onMouseLeave = () => {
-				rectNode?.classList.remove(styles.active);
-				zoomNode?.classList.remove(styles.active);
-			};
-
-			setImgContainerCR(node.getBoundingClientRect());
-
-			node.addEventListener("mouseenter", onMouseEnter);
-			node.addEventListener("mousemove", onMouseMove);
-			node.addEventListener("mouseleave", onMouseLeave);
-		},
-		[rectNode, zoomNode] // eslint-disable-line react-hooks/exhaustive-deps
-	);
+	const onMouseLeave = () => {
+		rectNode?.classList.remove(styles.active);
+		zoomNode?.classList.remove(styles.active);
+	};
 
 	const onChangeQuantity = (e: string) => {
 		setQuantity(Number(e));
@@ -182,9 +180,19 @@ export const Product = () => {
 							))}
 						</ul>
 						<div className={styles.image}>
-							<div ref={containerImgRef} className={styles.image__container}>
+							<div
+								className={styles.image__container}
+								onMouseEnter={onMouseEnter}
+								onMouseMove={onMouseMove}
+								onMouseLeave={onMouseLeave}
+							>
 								<img ref={rectRef} className={styles.image__rect} src={rect} alt="magnifier" />
-								<img src={currentImage} alt={product.title} className={styles.image__product} />
+								<img
+									ref={ImgRef}
+									src={currentImage}
+									alt={product.title}
+									className={styles.image__product}
+								/>
 							</div>
 							<p className={styles.image__text}>Pass the mouse over the image to apply zoom.</p>
 						</div>
