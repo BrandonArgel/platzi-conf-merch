@@ -49,6 +49,7 @@ export const Product = () => {
 		const { current: rect } = rectRef;
 		const { current: zoom } = zoomRef;
 
+		console.log({ imgContainer, rect, zoom });
 		if (!imgContainer || !rect || !zoom) return;
 		setZoomInitalized(true);
 
@@ -119,7 +120,7 @@ export const Product = () => {
 				imgContainer.removeEventListener("mouseleave", onMouseLeave);
 			}
 		};
-	}, [containerImgRef.current, containerImgRef.current, rectRef.current, zoomRef.current]); // eslint-disable-line react-hooks/exhaustive-deps
+	}, [containerImgRef.current, rectRef.current, zoomRef.current]);
 
 	const onChangeQuantity = (e: string) => {
 		setQuantity(Number(e));
