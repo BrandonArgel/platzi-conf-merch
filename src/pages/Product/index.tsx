@@ -1,5 +1,5 @@
 import { useParams, useNavigate } from "react-router-dom";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useStore } from "@context";
 import { Button, Loader, Select } from "@components";
 import { getProduct } from "@utils";
@@ -112,12 +112,9 @@ export const Product = () => {
 					zoomY = zoomY * ratio;
 				}
 				if (zoomNode !== null) {
-					// Zoom background size
 					zoomNode.style.backgroundSize = `${width * ratio}px ${height * ratio}px`;
-					// Zoom background width and height
 					zoomNode.style.width = `${rectWidth * ratio}px`;
 					zoomNode.style.height = `${rectHeight * ratio}px`;
-
 					zoomNode.style.backgroundPosition = `-${zoomX}px -${zoomY}px`;
 				}
 			};
