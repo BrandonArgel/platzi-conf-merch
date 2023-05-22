@@ -15,20 +15,16 @@ export const Product = () => {
 	const { id } = useParams();
 	const { addToCart } = useStore();
 
-	// const rectRef = useRef<HTMLImageElement>(null);
-	// const zoomRef = useRef<HTMLImageElement>(null);
-
 	const [loading, setLoading] = useState<boolean>(true);
 	const [empty, setEmpty] = useState<boolean>(false);
 	const [product, setProduct] = useState<ProductModel | null>(null);
 	const [quantity, setQuantity] = useState<number>(1);
 
-	/* Refs */
 	const [currentImage, setCurrentImage] = useState<string | undefined>("");
-	const [imgCR, setImgCR] = useState<DOMRect | undefined>(undefined);
-	const [rectCR, setRectCR] = useState<DOMRect | undefined>(undefined);
+	const [zoomActive, setZoomActive] = useState<boolean>(false);
 
 	/* Nodes */
+	const [imgNode, setImgNode] = useState<HTMLImageElement | null>(null);
 	const [rectNode, setRectNode] = useState<HTMLDivElement | null>(null);
 	const [zoomNode, setZoomNode] = useState<HTMLDivElement | null>(null);
 
@@ -51,19 +47,12 @@ export const Product = () => {
 
 	const ImgRef = useCallback((node: HTMLImageElement) => {
 		if (node === null) return;
-		node.onload = () => {
-			setImgCR(node.getBoundingClientRect());
-		};
-
-		return () => {
-			node.onload = null;
-		};
+		setImgNode(node);
 	}, []);
 
 	const rectRef = useCallback((node: HTMLImageElement) => {
 		if (node === null) return;
 		setRectNode(node);
-		setRectCR(node.getBoundingClientRect());
 	}, []);
 
 	const zoomRef = useCallback((node: HTMLDivElement) => {
@@ -74,9 +63,13 @@ export const Product = () => {
 	const onMouseEnter = () => {
 		rectNode?.classList.add(styles.active);
 		zoomNode?.classList.add(styles.active);
+		setZoomActive(true);
 	};
 
 	const onMouseMove = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+		if (imgNode === null || rectNode === null || zoomNode === null) return;
+		const imgCR = imgNode.getBoundingClientRect();
+		const rectCR = rectNode.getBoundingClientRect();
 		const { left, top, width, height } = imgCR || {
 			left: 0,
 			top: 0,
@@ -129,6 +122,7 @@ export const Product = () => {
 	const onMouseLeave = () => {
 		rectNode?.classList.remove(styles.active);
 		zoomNode?.classList.remove(styles.active);
+		setZoomActive(false);
 	};
 
 	const onChangeQuantity = (e: string) => {
@@ -194,7 +188,13 @@ export const Product = () => {
 									className={styles.image__product}
 								/>
 							</div>
-							<p className={styles.image__text}>Pass the mouse over the image to apply zoom.</p>
+							<p className={styles.image__text}>
+								{zoomActive ? (
+									<span>Move cursor over image to zoom in</span>
+								) : (
+									<span>Hover over image to zoom in</span>
+								)}
+							</p>
 						</div>
 						<div className={styles.description}>
 							<div
