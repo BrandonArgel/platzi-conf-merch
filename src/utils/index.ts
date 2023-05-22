@@ -4,3 +4,4 @@ export { getCategories } from './getCategories';
 export { getProducts } from './getProducts';
 export { getProduct } from './getProduct';
 export { loaderImg } from './loaderImg';
+export { randomNumberInRange } from './randomNumberInRange';

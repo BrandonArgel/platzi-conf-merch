@@ -1,5 +1,10 @@
+import { useRef } from "react";
+import { useStore } from "@context";
+
 const Information = () => {
-	return <div>Information</div>;
+	return <div>
+
+	</div>;
 };
 
 export { Information };

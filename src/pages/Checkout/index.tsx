@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useStore } from "@context";
-import { Button } from "@components";
+import { Button, Select } from "@components";
 import styles from "./Checkout.module.scss";
 
 const Checkout = () => {
@@ -8,7 +8,13 @@ const Checkout = () => {
 	const {
 		state: { cart, cartTotal },
 		removeFromCart,
+		updateProduct,
 	} = useStore();
+
+	const handleQuantityChange = (index: number, quantity: number) => {
+		const product = cart[index];
+		updateProduct({ ...product, quantity });
+	};
 
 	return (
 		<div className={styles.container}>
@@ -16,20 +22,26 @@ const Checkout = () => {
 				<h2 className={styles.title}>Checkout</h2>
 				{cart.length > 0 ? (
 					<ul className={styles.list}>
-						{cart.map((product, index) => (
-							<li key={`${product.id}${index}`} className={styles.list__item}>
+						{cart.map(({ id, images, title, quantity, stock, price }, i) => (
+							<li key={`${id}${i}`} className={styles.list__item}>
 								<div className={styles.list__details}>
-									<div className={styles.list__info} onClick={() => navigate(`/${product.id}`)}>
-										<img
-											src={product.images[0]}
-											alt={product.title}
-											className={styles.list__image}
-										/>
-										<h3 className={styles.list__title}>{product.title}</h3>
+									<div className={styles.list__info} onClick={() => navigate(`/${id}`)}>
+										<img src={images[0]} alt={title} className={styles.list__image} />
+										<h3 className={styles.list__title}>{title}</h3>
 									</div>
-									<span className={styles.list__price}>${product.price}</span>
+									<div className={styles.list__actions}>
+										<label className={styles.list__quantity}>
+											<span className={styles.list__text}>Quantity:</span>
+											<Select
+												value={String(quantity)}
+												onChange={(value) => handleQuantityChange(i, Number(value))}
+												options={[...Array.from({ length: stock }, (_, i) => i + 1)]}
+											/>
+										</label>
+										<p className={styles.list__price}>${price * quantity}</p>
+									</div>
 								</div>
-								<Button onClick={() => removeFromCart(index)}>
+								<Button onClick={() => removeFromCart(i)}>
 									<i className="fas fa-trash-alt"></i>
 								</Button>
 							</li>
@@ -41,7 +53,9 @@ const Checkout = () => {
 			</div>
 			<div className={styles.checkout}>
 				<h3 className={styles.checkout__title}>Total price: ${cartTotal}</h3>
-				<Button onClick={() => navigate("/checkout/information")} disabled={!cartTotal}>Continue shopping</Button>
+				<Button onClick={() => navigate("/checkout/information")} disabled={!cartTotal}>
+					Continue shopping
+				</Button>
 			</div>
 		</div>
 	);

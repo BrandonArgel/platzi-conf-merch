@@ -1,0 +1,33 @@
+@use '@styles/variables'as *;
+
+.select {
+  background: $gradient;
+  border: 1px solid $main-color;
+  border-radius: 1rem;
+  display: inline-block;
+  padding-right: 0.5rem;
+
+  &:focus-within {
+    outline: 2px dashed $main-color;
+    outline-offset: 3px;
+  }
+
+  &__dropdown {
+    @include font-style($main-font, normal, $fz-xs, 0px, $main-text-color);
+    background: $gradient;
+    border: none;
+    border-radius: 1rem;
+    color: $main-color;
+    cursor: pointer;
+    overflow-x: hidden;
+    padding: 0.5rem;
+    text-overflow: ellipsis;
+    width: 100%;
+    white-space: nowrap;
+
+    &:active,
+    &:focus {
+      outline: none;
+    }
+  }
+}

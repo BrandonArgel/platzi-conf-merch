@@ -191,6 +191,7 @@ const SearchProvider: React.FC<{ children: React.ReactNode }> = ({ children }) =
 	const getProductsFromParams = async (params: URLSearchParams) => {
 		try {
 			const products = await getProducts(params);
+
 			dispatch({
 				type: "UPDATE_PRODUCTS",
 				payload: products,

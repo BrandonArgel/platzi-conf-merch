@@ -5,7 +5,7 @@
 }
 
 .title {
-  @include font-style($main-font, bold, 2rem, 0px, $main-text-color);
+  @include font-style($main-font, bold, $fz-lg, 0px, $main-text-color);
 
   margin-bottom: 1rem;
 }

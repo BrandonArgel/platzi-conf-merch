@@ -26,7 +26,7 @@
   }
 
   &__cant {
-    @include font-style($main-font, normal, 1.2rem, 0px, $main-color);
+    @include font-style($main-font, normal, $fz-xxs, 0px, $main-color);
 
     border-radius: 50%;
     display: flex;
