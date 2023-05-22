@@ -1,7 +1,3 @@
-import React from "react";
-
-const Success = () => {
+export const Success = () => {
 	return <div>Success</div>;
 };
-
-export { Success };

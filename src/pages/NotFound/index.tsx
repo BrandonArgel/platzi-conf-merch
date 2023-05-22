@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 
-const NotFound = () => {
+export const NotFound = () => {
 	const navigate = useNavigate();
 
 	return (
@@ -10,5 +10,3 @@ const NotFound = () => {
 		</div>
 	);
 };
-
-export { NotFound };

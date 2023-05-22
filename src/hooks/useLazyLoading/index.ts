@@ -1,6 +1,6 @@
 import { useEffect, RefObject } from "react";
 
-const useLazyLoading = (imgRef: RefObject<HTMLImageElement>) => {
+export const useLazyLoading = (imgRef: RefObject<HTMLImageElement>) => {
   useEffect(() => {
     const { current: imgNode } = imgRef;
     const observer = new IntersectionObserver((entries) => {
@@ -27,4 +27,3 @@ const useLazyLoading = (imgRef: RefObject<HTMLImageElement>) => {
   }, [imgRef]);
 };
 
-export { useLazyLoading };

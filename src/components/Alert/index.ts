@@ -1,6 +1,6 @@
 import Swal from "sweetalert2";
 
-const Alert = Swal.mixin({
+export const Alert = Swal.mixin({
   toast: true,
   position: "top-end",
   showConfirmButton: false,
@@ -11,5 +11,3 @@ const Alert = Swal.mixin({
     toast.addEventListener("mouseleave", Swal.resumeTimer);
   },
 });
-
-export { Alert };

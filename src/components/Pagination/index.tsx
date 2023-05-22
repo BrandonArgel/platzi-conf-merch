@@ -9,7 +9,7 @@ interface PaginationProps {
 	handleNextPage: () => void;
 }
 
-const Pagination: React.FC<PaginationProps> = ({
+export const Pagination: React.FC<PaginationProps> = ({
 	page,
 	loading,
 	limit,
@@ -29,4 +29,3 @@ const Pagination: React.FC<PaginationProps> = ({
 	);
 };
 
-export { Pagination };

@@ -3,7 +3,7 @@ import { useStore } from "@context";
 import { Button, Select } from "@components";
 import styles from "./Checkout.module.scss";
 
-const Checkout = () => {
+export const Checkout = () => {
 	const navigate = useNavigate();
 	const {
 		state: { cart, cartTotal },
@@ -60,5 +60,3 @@ const Checkout = () => {
 		</div>
 	);
 };
-
-export { Checkout };

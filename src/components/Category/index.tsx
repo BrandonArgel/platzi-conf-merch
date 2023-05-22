@@ -6,8 +6,7 @@ interface CategoryProps {
 	active?: boolean;
 }
 
-const Category: React.FC<CategoryProps> = ({ name, active }) => {
+export const Category: React.FC<CategoryProps> = ({ name, active }) => {
 	return <Button className={`${styles.category} ${active ? styles.active : ""}`}>{name}</Button>;
 };
 
-export { Category };

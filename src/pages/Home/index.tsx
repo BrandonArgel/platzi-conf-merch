@@ -4,7 +4,7 @@ import { Categories, Products } from "@containers";
 import { useSearch } from "@context";
 import { useDebounce } from "@hooks";
 
-const Home = () => {
+export const Home = () => {
 	const {
 		state: { categories, products, page },
 		loading,
@@ -82,5 +82,3 @@ const Home = () => {
 		</>
 	);
 };
-
-export { Home };
