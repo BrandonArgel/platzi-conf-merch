@@ -1,5 +1,5 @@
 import { useParams, useNavigate } from "react-router-dom";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useStore } from "@context";
 import { Button, Loader, Select } from "@components";
 import { getProduct } from "@utils";
@@ -7,25 +7,30 @@ import { CartModel, ProductModel } from "@models";
 import styles from "./Product.module.scss";
 import rect from "@assets/images/magnifier.png";
 
-// TODO: Handle errors when there is no product
+const ratio = 3.5;
 
+// TODO: Handle errors when there is no product
 export const Product = () => {
 	const navigate = useNavigate();
 	const { id } = useParams();
 	const { addToCart } = useStore();
 
-	/* Refs */
-	const containerImgRef = useRef<HTMLDivElement>(null);
-	const rectRef = useRef<HTMLImageElement>(null);
-	const zoomRef = useRef<HTMLImageElement>(null);
+	// const rectRef = useRef<HTMLImageElement>(null);
+	// const zoomRef = useRef<HTMLImageElement>(null);
 
-	/* States */
 	const [loading, setLoading] = useState<boolean>(true);
 	const [empty, setEmpty] = useState<boolean>(false);
 	const [product, setProduct] = useState<ProductModel | null>(null);
 	const [quantity, setQuantity] = useState<number>(1);
+
+	/* Refs */
 	const [currentImage, setCurrentImage] = useState<string | undefined>("");
-	const [zoomInitialized, setZoomInitalized] = useState<boolean>(false);
+	const [imgContainerCR, setImgContainerCR] = useState<DOMRect | undefined>(undefined);
+	const [rectCR, setRectCR] = useState<DOMRect | undefined>(undefined);
+
+	/* Nodes */
+	const [rectNode, setRectNode] = useState<HTMLDivElement | null>(null);
+	const [zoomNode, setZoomNode] = useState<HTMLDivElement | null>(null);
 
 	const initialRequest = async () => {
 		try {
@@ -44,83 +49,92 @@ export const Product = () => {
 		initialRequest();
 	}, [id]); // eslint-disable-line react-hooks/exhaustive-deps
 
-	useEffect(() => {
-		const { current: imgContainer } = containerImgRef;
-		const { current: rect } = rectRef;
-		const { current: zoom } = zoomRef;
+	const rectRef = useCallback((node: HTMLImageElement) => {
+		if (node === null) return;
+		setRectNode(node);
+		setRectCR(node.getBoundingClientRect());
+	}, []);
 
-		console.log({ imgContainer, rect, zoom });
-		if (!imgContainer || !rect || !zoom) return;
-		setZoomInitalized(true);
+	const zoomRef = useCallback((node: HTMLDivElement) => {
+		if (node === null) return;
+		setZoomNode(node);
+	}, []);
 
-		const onMouseEnter = () => {
-			rect.classList.add(styles.active);
-			zoom.classList.add(styles.active);
-		};
+	const containerImgRef = useCallback(
+		(node: HTMLDivElement) => {
+			if (node === null) return;
 
-		const onMouseMove = (e: MouseEvent) => {
-			const ratio = 3.5;
-			const { left, top, width, height } = imgContainer.getBoundingClientRect();
-			const { width: rectWidth, height: rectHeight } = rect.getBoundingClientRect();
-			const x = e.clientX - left;
-			const y = e.clientY - top;
-			const rectX = x - rectWidth / 2;
-			const rectY = y - rectHeight / 2;
-			const maxX = width - rectWidth;
-			const maxY = height - rectHeight;
-			let zoomX, zoomY;
+			const onMouseEnter = () => {
+				rectNode?.classList.add(styles.active);
+				zoomNode?.classList.add(styles.active);
+			};
 
-			// Zoom background size
-			zoom.style.backgroundSize = `${width * ratio}px ${height * ratio}px`;
-			// Zoom background width and height
-			zoom.style.width = `${rectWidth * ratio}px`;
-			zoom.style.height = `${rectHeight * ratio}px`;
+			const onMouseMove = (e: MouseEvent) => {
+				const { left, top, width, height } = imgContainerCR || {
+					left: 0,
+					top: 0,
+					width: 0,
+					height: 0,
+				};
+				const { width: rectWidth, height: rectHeight } = rectCR || { width: 0, height: 0 };
+				const x = e.clientX - left;
+				const y = e.clientY - top;
+				const rectX = x - rectWidth / 2;
+				const rectY = y - rectHeight / 2;
+				const maxX = width - rectWidth;
+				const maxY = height - rectHeight;
+				let zoomX, zoomY;
 
-			if (rectX < 0) {
-				rect.style.left = "0px";
-				zoomX = 0;
-			} else if (rectX > maxX) {
-				rect.style.left = `${maxX}px`;
-				zoomX = maxX;
-			} else {
-				rect.style.left = `${rectX}px`;
-				zoomX = rectX;
-			}
+				if (rectNode !== null) {
+					if (rectX < 0) {
+						rectNode.style.left = "0px";
+						zoomX = 0;
+					} else if (rectX > maxX) {
+						rectNode.style.left = `${maxX}px`;
+						zoomX = maxX;
+					} else {
+						rectNode.style.left = `${rectX}px`;
+						zoomX = rectX;
+					}
 
-			if (rectY < 0) {
-				rect.style.top = "0px";
-				zoomY = 0;
-			} else if (rectY > maxY) {
-				rect.style.top = `${maxY}px`;
-				zoomY = maxY;
-			} else {
-				rect.style.top = `${rectY}px`;
-				zoomY = rectY;
-			}
+					if (rectY < 0) {
+						rectNode.style.top = "0px";
+						zoomY = 0;
+					} else if (rectY > maxY) {
+						rectNode.style.top = `${maxY}px`;
+						zoomY = maxY;
+					} else {
+						rectNode.style.top = `${rectY}px`;
+						zoomY = rectY;
+					}
 
-			zoomX = zoomX * ratio;
-			zoomY = zoomY * ratio;
+					zoomX = zoomX * ratio;
+					zoomY = zoomY * ratio;
+				}
+				if (zoomNode !== null) {
+					// Zoom background size
+					zoomNode.style.backgroundSize = `${width * ratio}px ${height * ratio}px`;
+					// Zoom background width and height
+					zoomNode.style.width = `${rectWidth * ratio}px`;
+					zoomNode.style.height = `${rectHeight * ratio}px`;
 
-			zoom.style.backgroundPosition = `-${zoomX}px -${zoomY}px`;
-		};
+					zoomNode.style.backgroundPosition = `-${zoomX}px -${zoomY}px`;
+				}
+			};
 
-		const onMouseLeave = () => {
-			rect.classList.remove(styles.active);
-			zoom.classList.remove(styles.active);
-		};
+			const onMouseLeave = () => {
+				rectNode?.classList.remove(styles.active);
+				zoomNode?.classList.remove(styles.active);
+			};
 
-		imgContainer.addEventListener("mouseenter", onMouseEnter);
-		imgContainer.addEventListener("mousemove", onMouseMove);
-		imgContainer.addEventListener("mouseleave", onMouseLeave);
+			setImgContainerCR(node.getBoundingClientRect());
 
-		return () => {
-			if (imgContainer && rect) {
-				imgContainer.removeEventListener("mousemove", onMouseMove);
-				imgContainer.removeEventListener("mouseenter", onMouseEnter);
-				imgContainer.removeEventListener("mouseleave", onMouseLeave);
-			}
-		};
-	}, [containerImgRef.current, rectRef.current, zoomRef.current]);
+			node.addEventListener("mouseenter", onMouseEnter);
+			node.addEventListener("mousemove", onMouseMove);
+			node.addEventListener("mouseleave", onMouseLeave);
+		},
+		[rectNode, zoomNode] // eslint-disable-line react-hooks/exhaustive-deps
+	);
 
 	const onChangeQuantity = (e: string) => {
 		setQuantity(Number(e));
@@ -175,9 +189,7 @@ export const Product = () => {
 								<img ref={rectRef} className={styles.image__rect} src={rect} alt="magnifier" />
 								<img src={currentImage} alt={product.title} className={styles.image__product} />
 							</div>
-							{zoomInitialized && (
-								<p className={styles.image__text}>Pass the mouse over the image to apply zoom.</p>
-							)}
+							<p className={styles.image__text}>Pass the mouse over the image to apply zoom.</p>
 						</div>
 						<div className={styles.description}>
 							<div
