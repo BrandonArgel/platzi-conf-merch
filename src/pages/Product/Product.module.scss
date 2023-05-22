@@ -69,8 +69,11 @@
   grid-area: image;
   max-height: 80vh;
   height: 100%;
-  position: relative;
   width: 100%;
+
+  &__container {
+    position: relative;
+  }
 
   &__product {
     object-fit: cover;
@@ -85,6 +88,12 @@
     pointer-events: none;
     width: 40%;
     height: 40%;
+  }
+
+  &__text {
+    @include font-style($main-font, normal, $fz-xs, 0px, $main-text-color);
+
+    margin-block-start: 0.5rem;
   }
 }
 

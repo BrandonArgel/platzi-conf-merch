@@ -25,6 +25,7 @@ export const Product = () => {
 	const [product, setProduct] = useState<ProductModel | null>(null);
 	const [quantity, setQuantity] = useState<number>(1);
 	const [currentImage, setCurrentImage] = useState<string | undefined>("");
+	const [zoomInitialized, setZoomInitalized] = useState<boolean>(false);
 
 	const initialRequest = async () => {
 		try {
@@ -49,6 +50,7 @@ export const Product = () => {
 		const { current: zoom } = zoomRef;
 
 		if (!imgContainer || !rect || !zoom) return;
+		setZoomInitalized(true);
 
 		const onMouseEnter = () => {
 			rect.classList.add(styles.active);
@@ -167,9 +169,14 @@ export const Product = () => {
 								</li>
 							))}
 						</ul>
-						<div ref={containerImgRef} className={styles.image}>
-							<img ref={rectRef} className={styles.image__rect} src={rect} alt="magnifier" />
-							<img src={currentImage} alt={product.title} className={styles.image__product} />
+						<div className={styles.image}>
+							<div ref={containerImgRef} className={styles.image__container}>
+								<img ref={rectRef} className={styles.image__rect} src={rect} alt="magnifier" />
+								<img src={currentImage} alt={product.title} className={styles.image__product} />
+							</div>
+							{zoomInitialized && (
+								<p className={styles.image__text}>Pass the mouse over the image to apply zoom.</p>
+							)}
 						</div>
 						<div className={styles.description}>
 							<div

@@ -84,7 +84,7 @@ const storeMethods = {
 
 		Alert.fire({
 			icon: "success",
-			title: "Product removed from cart.",
+			title: `${state.cart[payload].title} removed from cart.`,
 		});
 
 		return updateCart({ ...state }, [...cart]);
