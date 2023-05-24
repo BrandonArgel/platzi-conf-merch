@@ -3,11 +3,12 @@ import styles from "./Select.module.scss";
 interface Props {
 	title?: string;
 	options: string[] | number[];
-	onChange: (value: string) => void;
+	onChange?: (value: string) => void;
 	value: string;
 	multiSelect?: boolean;
 	reset?: boolean;
 	defaultValue?: string;
+	disabled?: boolean;
 }
 
 export const Select = ({
@@ -17,15 +18,17 @@ export const Select = ({
 	value,
 	reset = false,
 	defaultValue = "Select an option",
+	disabled = false,
 }: Props) => {
 	return (
 		<div className={styles.select}>
 			<select
 				className={styles.select__dropdown}
 				id={title}
-				onChange={(e) => onChange(e.target.value.toLowerCase())}
+				onChange={disabled ? undefined : (e) => onChange && onChange(e.target.value)}
 				title={title}
 				value={value}
+				disabled={disabled}
 			>
 				{reset && <option value="">{defaultValue}</option>}
 				{options.map((option) => (

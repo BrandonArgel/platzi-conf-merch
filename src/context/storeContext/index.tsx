@@ -1,15 +1,21 @@
 import React, { createContext, useContext, useEffect, useReducer } from "react";
 import { useLocalStorage } from "@hooks";
 import { Alert } from "@components";
-import { CartModel } from "@models";
+import { BuyerModel, CartModel } from "@models";
 
 type StoreState = {
 	cart: CartModel[];
+	buyer: BuyerModel;
 	cartCounter: number;
 	cartTotal: number;
 };
 
-type StoreActions = "INITIALIZE_STORE" | "ADD_TO_CART" | "REMOVE_FROM_CART" | "UPDATE_PRODUCT";
+type StoreActions =
+	| "INITIALIZE_STORE"
+	| "ADD_TO_CART"
+	| "REMOVE_FROM_CART"
+	| "UPDATE_PRODUCT"
+	| "ADD_TO_BUYER";
 
 type StoreAction = {
 	type: StoreActions;
@@ -21,10 +27,12 @@ type StoreContextType = {
 	addToCart: (payload: CartModel) => void;
 	removeFromCart: (payload: number) => void;
 	updateProduct: (payload: CartModel) => void;
+	addToBuyer: (payload: any) => void;
 };
 
 const initialState: StoreState = {
 	cart: [],
+	buyer: {} as BuyerModel,
 	cartCounter: 0,
 	cartTotal: 0,
 };
@@ -99,10 +107,13 @@ const storeMethods = {
 
 		Alert.fire({
 			icon: "success",
-			title: "Product updated.",
+			title: "Order updated.",
 		});
 
 		return updateCart({ ...state }, [...cart]);
+	},
+	ADD_TO_BUYER: (state: StoreState, payload: any) => {
+		return { ...state, buyer: payload };
 	},
 };
 
@@ -116,6 +127,7 @@ const storeContext = createContext<StoreContextType>({
 	addToCart: () => undefined,
 	removeFromCart: () => undefined,
 	updateProduct: () => undefined,
+	addToBuyer: () => undefined,
 });
 
 const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -138,6 +150,10 @@ const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ children }) =>
 		dispatch({ type: "UPDATE_PRODUCT", payload });
 	};
 
+	const addToBuyer = (payload: any) => {
+		dispatch({ type: "ADD_TO_BUYER", payload });
+	};
+
 	useEffect(() => {
 		initializeStore(storedValue);
 	}, []); // eslint-disable-line react-hooks/exhaustive-deps
@@ -151,6 +167,7 @@ const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ children }) =>
 		addToCart,
 		removeFromCart,
 		updateProduct,
+		addToBuyer,
 	};
 
 	return <storeContext.Provider value={value}>{children}</storeContext.Provider>;

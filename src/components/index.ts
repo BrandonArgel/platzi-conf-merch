@@ -3,6 +3,7 @@ export { Button } from "./Button";
 export { Category } from "./Category";
 export { Footer } from "./Footer";
 export { Header } from "./Header";
+export { Input } from "./Input";
 export { Loader } from "./Loader";
 export { Search } from "./Search";
 export { Select } from "./Select";

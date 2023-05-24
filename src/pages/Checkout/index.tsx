@@ -41,9 +41,9 @@ export const Checkout = () => {
 										<p className={styles.list__price}>${price * quantity}</p>
 									</div>
 								</div>
-								<Button onClick={() => removeFromCart(i)}>
+								<button onClick={() => removeFromCart(i)} className={styles.list__remove}>
 									<i className="fas fa-trash-alt"></i>
-								</Button>
+								</button>
 							</li>
 						))}
 					</ul>

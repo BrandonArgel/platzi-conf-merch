@@ -1,4 +1,5 @@
 import { useEffect, RefObject } from "react";
+import { defaultImage } from "@utils"
 
 export const useLazyLoading = (imgRef: RefObject<HTMLImageElement>) => {
   useEffect(() => {
@@ -15,6 +16,10 @@ export const useLazyLoading = (imgRef: RefObject<HTMLImageElement>) => {
         imgNode.onload = () => {
           currentImg.classList.remove("hide");
           currentImg.parentElement?.classList.remove("skeleton");
+        };
+
+        imgNode.onerror = () => {
+          currentImg.src = defaultImage;
         };
       });
     });

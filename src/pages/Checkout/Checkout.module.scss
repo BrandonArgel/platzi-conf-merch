@@ -63,8 +63,31 @@
     @include font-style($main-font, bold, $fz-md, 0px, $main-text-color);
   }
 
-  button {
+  &__actions {
+    display: flex;
+    flex-flow: column nowrap;
+  }
+
+  &__quantity {
+    display: flex;
+    flex-flow: row nowrap;
+    gap: 0.5rem;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  &__text {
+    @include font-style($main-font, normal, $fz-sm, 0px, $main-text-color);
+  }
+
+  &__remove {
     background: none;
+    border: none;
+    cursor: pointer;
+    outline: none;
+    height: fit-content;
+    width: fit-content;
+    place-self: center center;
 
     i {
       color: $main-color;

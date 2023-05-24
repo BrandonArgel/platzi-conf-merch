@@ -8,7 +8,6 @@
 
 html {
   font-size: 62.5%;
-  user-select: none;
   overflow-x: hidden;
   max-width: 100vw;
 }
@@ -52,7 +51,7 @@ a {
   background-color: $main-color;
 }
 
-:focus-visible {
+:focus-visible:not(input) {
   outline: 2px dashed $main-color;
   outline-offset: 3px;
 }
@@ -62,7 +61,7 @@ a {
   outline-offset: 0px;
 }
 
-:focus {
+:focus:not(input) {
   outline: 2px dashed $main-color;
   outline-offset: 3px;
 }
@@ -118,4 +117,17 @@ a {
   to {
     background-position: 40rem 0, 0 0;
   }
+}
+
+// SweetAlert2
+#swal2-title {
+  @include font-style($main-font, bold, $fz-sm, 0px, $main-text-color);
+
+  margin: 0 0 0 0.5rem;
+}
+
+#swal2-html-container {
+  @include font-style($main-font, normal, $fz-xs, 0px, $main-text-color);
+
+  margin: 0 0 0 0.5rem;
 }

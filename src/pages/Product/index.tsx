@@ -4,6 +4,7 @@ import { useStore } from "@context";
 import { Button, Loader, Select } from "@components";
 import { getProduct } from "@utils";
 import { CartModel, ProductModel } from "@models";
+import { defaultImage, loaderImg } from "@utils";
 import styles from "./Product.module.scss";
 import rect from "@assets/images/magnifier.png";
 
@@ -17,6 +18,8 @@ export const Product = () => {
 
 	const [loading, setLoading] = useState<boolean>(true);
 	const [empty, setEmpty] = useState<boolean>(false);
+	const [imgError, setImgError] = useState<boolean>(false);
+	const [imgLoaded, setImgLoaded] = useState<boolean>(false);
 	const [product, setProduct] = useState<ProductModel | null>(null);
 	const [quantity, setQuantity] = useState<number>(1);
 
@@ -27,6 +30,22 @@ export const Product = () => {
 	const [imgNode, setImgNode] = useState<HTMLImageElement | null>(null);
 	const [rectNode, setRectNode] = useState<HTMLDivElement | null>(null);
 	const [zoomNode, setZoomNode] = useState<HTMLDivElement | null>(null);
+
+	const ImgRef = useCallback((node: HTMLImageElement) => {
+		if (node === null) return;
+		setImgNode(node);
+		return node;
+	}, []);
+
+	const rectRef = useCallback((node: HTMLImageElement) => {
+		if (node === null) return;
+		setRectNode(node);
+	}, []);
+
+	const zoomRef = useCallback((node: HTMLDivElement) => {
+		if (node === null) return;
+		setZoomNode(node);
+	}, []);
 
 	const initialRequest = async () => {
 		try {
@@ -44,21 +63,6 @@ export const Product = () => {
 	useEffect(() => {
 		initialRequest();
 	}, [id]); // eslint-disable-line react-hooks/exhaustive-deps
-
-	const ImgRef = useCallback((node: HTMLImageElement) => {
-		if (node === null) return;
-		setImgNode(node);
-	}, []);
-
-	const rectRef = useCallback((node: HTMLImageElement) => {
-		if (node === null) return;
-		setRectNode(node);
-	}, []);
-
-	const zoomRef = useCallback((node: HTMLDivElement) => {
-		if (node === null) return;
-		setZoomNode(node);
-	}, []);
 
 	const onMouseEnter = () => {
 		rectNode?.classList.add(styles.active);
@@ -112,6 +116,7 @@ export const Product = () => {
 			zoomY = zoomY * ratio;
 		}
 		if (zoomNode !== null) {
+			zoomNode.style.backgroundImage = `url(${currentImage})`;
 			zoomNode.style.backgroundSize = `${width * ratio}px ${height * ratio}px`;
 			zoomNode.style.width = `${rectWidth * ratio}px`;
 			zoomNode.style.height = `${rectHeight * ratio}px`;
@@ -161,21 +166,51 @@ export const Product = () => {
 					<>
 						<h2 className={styles.title}>{product.title}</h2>
 						<ul className={styles.thumbnails}>
-							{product.images.map((image, index) => (
-								<li
-									key={index}
-									className={`${styles.thumbnails__item} ${
-										image === currentImage ? styles.active : ""
-									}`}
-									onMouseEnter={() => setCurrentImage(image)}
-								>
-									<img src={image} alt={product.title} />
-								</li>
-							))}
+							{product.images.map((image, index) => {
+								let imgLoaded = false;
+								let imgError = false;
+
+								return (
+									<li
+										key={index}
+										className={`${styles.thumbnails__item} ${
+											image === currentImage ? styles.active : ""
+										} skeleton`}
+										onMouseEnter={() => setCurrentImage(!imgError ? image : defaultImage)}
+									>
+										<img
+											alt={product.title}
+											src={loaderImg(50, 50)}
+											className="hide"
+											onLoad={(e) => {
+												imgLoaded = true;
+												const target = e.target as HTMLImageElement;
+
+												if (!imgError) {
+													target.src = image;
+													if (imgLoaded) {
+														target.classList.remove("hide");
+														target.parentElement?.classList.remove("skeleton");
+													}
+												}
+											}}
+											onError={(e) => {
+												imgError = true;
+												const target = e.target as HTMLImageElement;
+												target.classList.remove("hide");
+												target.parentElement?.classList.remove("skeleton");
+												target.src = defaultImage;
+											}}
+											width={50}
+											height={50}
+										/>
+									</li>
+								);
+							})}
 						</ul>
 						<div className={styles.image}>
 							<div
-								className={styles.image__container}
+								className={`${styles.image__container} skeleton`}
 								onMouseEnter={onMouseEnter}
 								onMouseMove={onMouseMove}
 								onMouseLeave={onMouseLeave}
@@ -183,9 +218,30 @@ export const Product = () => {
 								<img ref={rectRef} className={styles.image__rect} src={rect} alt="magnifier" />
 								<img
 									ref={ImgRef}
-									src={currentImage}
+									src={loaderImg(300, 300)}
 									alt={product.title}
-									className={styles.image__product}
+									className={`${styles.image__product} hide`}
+									onLoad={() => {
+										setImgLoaded(true);
+										if (imgNode !== null && !imgError) {
+											imgNode.src = currentImage || defaultImage;
+											if (imgLoaded) {
+												imgNode.classList.remove("hide");
+												imgNode.parentElement?.classList.remove("skeleton");
+											}
+										}
+									}}
+									onError={() => {
+										setImgError(true);
+										setCurrentImage(defaultImage);
+										if (imgNode !== null) {
+											imgNode.src = defaultImage;
+											imgNode.classList.remove("hide");
+											imgNode.parentElement?.classList.remove("skeleton");
+										}
+									}}
+									width={300}
+									height={300}
 								/>
 							</div>
 							<p className={styles.image__text}>
@@ -197,11 +253,7 @@ export const Product = () => {
 							</p>
 						</div>
 						<div className={styles.description}>
-							<div
-								ref={zoomRef}
-								style={{ backgroundImage: `url(${currentImage})` }}
-								className={styles.description__zoom}
-							/>
+							<div ref={zoomRef} className={styles.description__zoom} />
 							<p className={styles.description__text}>
 								Price: <span className={styles.description__price}>${product.price}</span>
 							</p>
