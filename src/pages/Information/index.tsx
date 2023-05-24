@@ -174,7 +174,7 @@ export const Information = () => {
 				text: "Your order has been placed successfully",
 			});
 
-			// actions.resetForm();
+			actions.resetForm();
 		} catch (error) {
 			let errorMessage = "An error has occurred, please try again later";
 			if (error instanceof Error) {
