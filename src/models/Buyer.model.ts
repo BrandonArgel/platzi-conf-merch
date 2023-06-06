@@ -1,7 +1,8 @@
-import { CartModel } from "@models";
+import { BaseModel, CartModel } from "@models";
 
-export interface BuyerModel {
+export interface BuyerModel extends BaseModel {
   name: string;
+  lastName: string;
   email: string;
   direction: string;
   department: string;
@@ -12,4 +13,7 @@ export interface BuyerModel {
   phone: string;
   cart: CartModel[];
   total: number;
+  OrderId: number;
 }
+
+export type BuyerModelCreate = Omit<BuyerModel, "cart" | "total" | "OrderId" | "createdAt" | "updatedAt">

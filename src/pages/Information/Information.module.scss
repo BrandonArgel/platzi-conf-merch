@@ -160,7 +160,7 @@
   }
 }
 
-@media screen and (min-width: $tablet) {
+@media screen and (min-width: $desktop) {
   .information {
     grid-template-areas: "form sidebar";
     grid-template-columns: 2fr 1fr;

@@ -1,0 +1,74 @@
+@use '@styles/variables'as *;
+
+.payment {
+  display: grid;
+  grid-template-areas: "title"
+    "content"
+    "buttons";
+  gap: 1rem;
+
+  &__content {
+    grid-area: content;
+  }
+
+  &__title {
+    @include font-style($main-font, bold, $fz-lg, 0px, $main-text-color);
+
+    grid-area: title;
+  }
+
+  &__items {
+    margin-top: 1rem;
+  }
+
+  &__item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid rgba($stroke-color, 0.5);
+    padding: 0.25rem 0;
+
+    h4,
+    span {
+      @include font-style($main-font, normal, $fz-sm, 0px, $main-text-color);
+    }
+  }
+
+  &__empty {
+    @include font-style($main-font, normal, $fz-sm, 0px, $main-text-color);
+  }
+
+  &__total {
+    @include font-style($main-font, bold, $fz-sm, 0px, $main-text-color);
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 1rem;
+    padding: 0.25rem 0;
+  }
+
+  &__amount {
+    text-decoration: line-through;
+    color: $stroke-color;
+    margin-right: 1rem;
+  }
+
+  &__discount {
+    color: $main-color;
+  }
+
+  &__buttons {
+    grid-area: buttons;
+  }
+}
+
+@media (min-width: $tablet) {
+  .payment {
+    grid-template-areas: "title title"
+      "content buttons";
+    grid-template-columns: 3fr 2fr;
+    column-gap: 2rem;
+    row-gap: 1rem;
+  }
+}

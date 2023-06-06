@@ -1,15 +1,16 @@
 import { Formik, Form, Field, FieldProps, FormikHelpers, FormikErrors, ErrorMessage } from "formik";
 import { useNavigate } from "react-router-dom";
-import { useRef } from "react";
+import { useRef, useId } from "react";
 import { useStore } from "@context";
 import { Alert, Button, Select } from "@components";
-import { BuyerModel } from "@models";
+import { BuyerModelCreate } from "@models";
 import styles from "./Information.module.scss";
 
-type FormValues = Omit<BuyerModel, "cart" | "total">;
+type FormValues = Omit<BuyerModelCreate, "id">;
 
 const initialFormState: FormValues = {
 	name: "",
+	lastName: "",
 	email: "",
 	direction: "",
 	department: "",
@@ -25,6 +26,11 @@ const formInputs = [
 		name: "name",
 		type: "text",
 		placeholder: "Full name",
+	},
+	{
+		name: "lastName",
+		type: "text",
+		placeholder: "Last name",
 	},
 	{
 		name: "email",
@@ -79,6 +85,15 @@ const inputValidators: inputValidatorsType = {
 			error = "Name is required, please enter a name";
 		} else if (!/^[a-zA-ZÀ-ÿ\s]{1,40}$/.test(name)) {
 			error = "Name is invalid, name must be between 1 and 40 characters";
+		}
+		return error;
+	},
+	lastName: (lastName: string) => {
+		let error;
+		if (!lastName) {
+			error = "Last name is required, please enter a last name";
+		} else if (!/^[a-zA-ZÀ-ÿ\s]{1,40}$/.test(lastName)) {
+			error = "Last name is invalid, last name must be between 1 and 40 characters";
 		}
 		return error;
 	},
@@ -157,6 +172,7 @@ const inputValidators: inputValidatorsType = {
 };
 
 export const Information = () => {
+	const userId = useId();
 	const formRef = useRef(null);
 	const navigate = useNavigate();
 	const {
@@ -166,7 +182,7 @@ export const Information = () => {
 
 	const handleSubmit = (values: FormValues, actions: FormikHelpers<FormValues>) => {
 		try {
-			addToBuyer({ ...values, cart, total: cartTotal });
+			addToBuyer({ ...values, cart, total: cartTotal, id: userId });
 
 			Alert.fire({
 				icon: "success",
