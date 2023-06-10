@@ -1,20 +1,20 @@
 import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
 import { useState } from "react";
 import { useStore } from "@context";
+import { Button } from "@components";
 import { useNavigate } from "react-router-dom";
 import styles from "./Payment.module.scss";
 
 export const Payment = () => {
 	const { VITE_PAYPAL_CLIENT_ID } = import.meta.env;
 	const {
-		// state: { cart, cartTotal, buyer },
 		state: { cart, cartTotal },
 	} = useStore();
 	const [paidFor, setPaidFor] = useState(false);
 
-	const history = useNavigate();
+	const navigate = useNavigate();
 	if (paidFor) {
-		history("/checkout/success");
+		navigate("/checkout/success");
 	}
 
 	return (
@@ -43,6 +43,7 @@ export const Payment = () => {
 						<span className={styles.payment__discount}>$0.01</span>
 					</p>
 				</div>
+				<Button onClick={() => navigate("/checkout/success")}>Continue without paying</Button>
 				<PayPalScriptProvider options={{ "client-id": VITE_PAYPAL_CLIENT_ID }}>
 					<PayPalButtons
 						disabled={cart.length === 0}

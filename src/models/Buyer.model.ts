@@ -4,8 +4,7 @@ export interface BuyerModel extends BaseModel {
   name: string;
   lastName: string;
   email: string;
-  direction: string;
-  department: string;
+  address: string;
   city: string;
   country: string;
   state: string;

@@ -5,6 +5,7 @@ export { Footer } from "./Footer";
 export { Header } from "./Header";
 export { Input } from "./Input";
 export { Loader } from "./Loader";
+export { Map } from "./Map";
 export { Search } from "./Search";
 export { Select } from "./Select";
 export { Pagination } from "./Pagination";

@@ -12,8 +12,7 @@ const initialFormState: FormValues = {
 	name: "",
 	lastName: "",
 	email: "",
-	direction: "",
-	department: "",
+	address: "",
 	city: "",
 	country: "",
 	state: "",
@@ -38,14 +37,9 @@ const formInputs = [
 		placeholder: "Email",
 	},
 	{
-		name: "direction",
+		name: "address",
 		type: "text",
-		placeholder: "Direction",
-	},
-	{
-		name: "department",
-		type: "text",
-		placeholder: "Department",
+		placeholder: "Street address",
 	},
 	{
 		name: "city",
@@ -106,12 +100,12 @@ const inputValidators: inputValidatorsType = {
 		}
 		return error;
 	},
-	direction: (direction: string) => {
+	address: (address: string) => {
 		let error;
-		if (!direction) {
-			error = "Direction is required, please enter a direction";
-		} else if (!/^[a-zA-ZÀ-ÿ0-9\s\d]{1,40}$/.test(direction)) {
-			error = "Direction is invalid, direction must be between 1 and 40 characters and numbers";
+		if (!address) {
+			error = "Address is required, please enter a address";
+		} else if (!/^[a-zA-ZÀ-ÿ0-9\s\d]{1,40}$/.test(address)) {
+			error = "Address is invalid, Address must be between 1 and 40 characters and numbers";
 		}
 		return error;
 	},

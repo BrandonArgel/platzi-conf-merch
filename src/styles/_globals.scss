@@ -131,3 +131,15 @@ a {
 
   margin: 0 0 0 0.5rem;
 }
+
+.swal2-timer-progress-bar {
+  background: $main-color;
+}
+
+.swal2-success * {
+  border-color: $main-color !important;
+}
+
+.swal2-success span {
+  background-color: $main-color !important;
+}
