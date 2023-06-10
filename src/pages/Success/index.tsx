@@ -1,9 +1,6 @@
-import { useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
 import { useStore } from "@context";
 import { Map } from "@components";
 import { useGoogleAddress } from "@hooks";
-import { PositionModel } from "@models";
 import styles from "./Success.module.scss";
 
 const defaultPosition = {
